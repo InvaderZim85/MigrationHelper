@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Input;
 using CmsMigrationHelper.Ui.View;
 using MahApps.Metro.Controls.Dialogs;
@@ -51,12 +48,32 @@ namespace CmsMigrationHelper.Ui.ViewModel
         }
 
         /// <summary>
+        /// Backing field for <see cref="Title"/>
+        /// </summary>
+        private string _title;
+
+        /// <summary>
+        /// Gets or sets the title of the main window
+        /// </summary>
+        public string Title
+        {
+            get => _title;
+            set => SetField(ref _title, value);
+        }
+
+        /// <summary>
         /// Init the view model
         /// </summary>
         /// <param name="dialogCoordinator">The mah apps dialog coordinator</param>
         public void InitViewModel(IDialogCoordinator dialogCoordinator)
         {
             _dialogCoordinator = dialogCoordinator;
+
+            var version = Helper.GetVersion();
+
+            Title = $"CMS Migration Helper (v{version.productVersion})";
+
+            SwitchControl(MenuItemType.Migration);
         }
 
         /// <summary>
@@ -82,6 +99,12 @@ namespace CmsMigrationHelper.Ui.ViewModel
                 {
                     case MenuItemType.Migration:
                         control = new MigrationControl();
+                        break;
+                    case MenuItemType.Info:
+                        control = new InfoControl();
+                        break;
+                    case MenuItemType.Close:
+                        Application.Current.Shutdown();
                         break;
                     default:
                         await _dialogCoordinator.ShowMessageAsync(this, "Error", "The given type is not supported.");

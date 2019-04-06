@@ -8,11 +8,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="clr-namespace:CmsMigrationHelper.Ui"
     xmlns:viewModel="clr-namespace:CmsMigrationHelper.Ui.ViewModel"
-    Title="MainWindow"
+    Title="{Binding Title}"
     Width="800"
     Height="450"
     mah:DialogParticipation.Register="{Binding}"
     Loaded="MainWindow_OnLoaded"
+    ResizeMode="CanResizeWithGrip"
+    WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <mah:MetroWindow.DataContext>
         <viewModel:MainWindowViewModel />
@@ -20,14 +22,19 @@
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Program">
-                <MenuItem Header="Info" />
-                <Separator />
-                <MenuItem Header="Close" />
+                <MenuItem
+                    Command="{Binding MenuCommand}"
+                    CommandParameter="{x:Static ui:MenuItemType.Close}"
+                    Header="Close" />
             </MenuItem>
             <MenuItem
                 Command="{Binding MenuCommand}"
                 CommandParameter="{x:Static ui:MenuItemType.Migration}"
                 Header="Migration" />
+            <MenuItem
+                Command="{Binding MenuCommand}"
+                CommandParameter="{x:Static ui:MenuItemType.Info}"
+                Header="Info" />
         </Menu>
 
         <StatusBar DockPanel.Dock="Bottom">

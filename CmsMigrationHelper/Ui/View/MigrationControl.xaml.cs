@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using CmsMigrationHelper.Ui.ViewModel;
 using MahApps.Metro.Controls.Dialogs;
 

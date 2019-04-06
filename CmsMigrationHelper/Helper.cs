@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Xml;
+using CmsMigrationHelper.DataObjects;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using Microsoft.Build.Evaluation;
+using NuGet;
 using ZimLabs.Utility;
 
 namespace CmsMigrationHelper
@@ -74,6 +79,44 @@ namespace CmsMigrationHelper
             project.Save();
 
             return (true, scriptName);
+        }
+
+        /// <summary>
+        /// Gets the package information of the project
+        /// </summary>
+        /// <returns>The list with the reference data</returns>
+        public static List<ReferenceEntry> GetPackageInformation()
+        {
+            var packageFile = Path.Combine(Global.GetBaseFolder(), "packages.config");
+            if (!File.Exists(packageFile))
+                return new List<ReferenceEntry>();
+
+            var file = new PackageReferenceFile(packageFile);
+            var references = file.GetPackageReferences();
+
+            var result = new List<ReferenceEntry>();
+            foreach (var package in references)
+            {
+                result.Add(new ReferenceEntry
+                {
+                    Name = package.Id,
+                    IsDevelopmentDependency = package.IsDevelopmentDependency,
+                    TargetFramework = package.TargetFramework.Version.ToString(),
+                    Version = package.Version.Version.ToString()
+                });
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the version infos of the program
+        /// </summary>
+        /// <returns>The version infos</returns>
+        public static (string internalName, string originalName, string fileVersion, string productVersion) GetVersion()
+        {
+            var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+            return (version.InternalName, version.OriginalFilename, version.FileVersion, version.ProductVersion);
         }
     }
 }
