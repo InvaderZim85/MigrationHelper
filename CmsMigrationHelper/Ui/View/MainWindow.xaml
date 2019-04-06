@@ -11,6 +11,8 @@
     Title="MainWindow"
     Width="800"
     Height="450"
+    mah:DialogParticipation.Register="{Binding}"
+    Loaded="MainWindow_OnLoaded"
     mc:Ignorable="d">
     <mah:MetroWindow.DataContext>
         <viewModel:MainWindowViewModel />
@@ -29,7 +31,7 @@
         </Menu>
 
         <StatusBar DockPanel.Dock="Bottom">
-            <StatusBarItem Content="Info" />
+            <StatusBarItem Content="{Binding ControlDescription}" />
         </StatusBar>
 
         <ContentControl Content="{Binding Control}" />

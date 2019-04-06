@@ -17,36 +17,87 @@ namespace CmsMigrationHelper.Ui.ViewModel
         /// </summary>
         private IDialogCoordinator _dialogCoordinator;
 
-        private object _control;
+        /// <summary>
+        /// Contains the dictionary with the controls
+        /// </summary>
+        private readonly Dictionary<MenuItemType, IUserControl> _controlDictionary = new Dictionary<MenuItemType, IUserControl>();
 
-        public Object Control
+        /// <summary>
+        /// Backing field for <see cref="Control"/>
+        /// </summary>
+        private object _control;
+        
+        /// <summary>
+        /// Gets or sets the selected control
+        /// </summary>
+        public object Control
         {
             get => _control;
             set => SetField(ref _control, value);
         }
 
+        /// <summary>
+        /// Backing field for <see cref="ControlDescription"/>
+        /// </summary>
+        private string _controlDescription = "CMS migration helper";
+
+        /// <summary>
+        /// Gets or sets the description of the control
+        /// </summary>
+        public string ControlDescription
+        {
+            get => _controlDescription;
+            set => SetField(ref _controlDescription, value);
+        }
+
+        /// <summary>
+        /// Init the view model
+        /// </summary>
+        /// <param name="dialogCoordinator">The mah apps dialog coordinator</param>
+        public void InitViewModel(IDialogCoordinator dialogCoordinator)
+        {
+            _dialogCoordinator = dialogCoordinator;
+        }
+
+        /// <summary>
+        /// The menu command to select another control
+        /// </summary>
         public ICommand MenuCommand => new RelayCommand<MenuItemType>(SwitchControl);
 
-
-
-        private void SwitchControl(MenuItemType type)
+        /// <summary>
+        /// Switches between the controls
+        /// </summary>
+        /// <param name="type">The desired type</param>
+        private async void SwitchControl(MenuItemType type)
         {
             IUserControl control = null;
 
-            switch (type)
+            if (_controlDictionary.ContainsKey(type))
             {
-                case MenuItemType.Migration:
-                    control = new MigrationControl();
-                    break;
+                control = _controlDictionary[type];
+            }
+            else
+            {
+                switch (type)
+                {
+                    case MenuItemType.Migration:
+                        control = new MigrationControl();
+                        break;
+                    default:
+                        await _dialogCoordinator.ShowMessageAsync(this, "Error", "The given type is not supported.");
+                        break;
+                }
+
+                _controlDictionary.Add(type, control);
             }
 
             if (control == null)
                 return;
 
+            ControlDescription = control.Description;
             control.InitControl();
 
             Control = control;
-
         }
     }
 }

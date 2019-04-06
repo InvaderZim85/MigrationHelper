@@ -1,4 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
+using CmsMigrationHelper.Ui.ViewModel;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace CmsMigrationHelper.Ui.View
 {
@@ -26,6 +29,27 @@ namespace CmsMigrationHelper.Ui.View
         public void InitControl()
         {
             SqlEditor.SyntaxHighlighting = Helper.LoadSqlSchema();
+            if (DataContext is MigrationControlViewModel viewModel)
+                viewModel.InitViewModel(DialogCoordinator.Instance, (SetSqlText, GetSqlText));
+
+        }
+
+        /// <summary>
+        /// Gets the text of the avalon editor
+        /// </summary>
+        /// <returns>The text</returns>
+        private string GetSqlText()
+        {
+            return SqlEditor.Text;
+        }
+
+        /// <summary>
+        /// Sets the text of the avalon editor
+        /// </summary>
+        /// <param name="text">The desired text</param>
+        private void SetSqlText(string text)
+        {
+            SqlEditor.Text = text;
         }
     }
 }
