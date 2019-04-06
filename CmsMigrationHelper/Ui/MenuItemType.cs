@@ -1,0 +1,23 @@
+﻿namespace CmsMigrationHelper.Ui
+{
+    /// <summary>
+    /// Contains the different menu items
+    /// </summary>
+    public enum MenuItemType
+    {
+        /// <summary>
+        /// Closes the application
+        /// </summary>
+        Close,
+
+        /// <summary>
+        /// Shows the info control
+        /// </summary>
+        Info,
+
+        /// <summary>
+        /// Shows the migration control
+        /// </summary>
+        Migration
+    }
+}
