@@ -5,12 +5,12 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CmsMigrationHelper")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("MigrationHelper")]
+[assembly: AssemblyDescription("Helper tool for the creation of migration scripts (dbup-migration)")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CmsMigrationHelper")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
+[assembly: AssemblyCompany("ZimLabs")]
+[assembly: AssemblyProduct("MigrationHelper")]
+[assembly: AssemblyCopyright("Copyright ©  2019 by A. Pouwels")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
