@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:MigrationHelper.Ui.View"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -110,6 +111,26 @@
             HorizontalAlignment="Right"
             Command="{Binding CheckCommand}"
             Content="Check SQL" />
+        <iconPacks:PackIconMaterial
+            Grid.Row="6"
+            Grid.Column="1"
+            Margin="0,0,50,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Foreground="Green"
+            Kind="CodeTagsCheck"
+            ToolTip="SQL script is valid"
+            Visibility="{Binding ShowValidIcon}" />
+        <iconPacks:PackIconMaterial
+            Grid.Row="6"
+            Grid.Column="1"
+            Margin="0,0,50,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Foreground="Red"
+            Kind="MessageAlert"
+            ToolTip="SQL script contains errors"
+            Visibility="{Binding ShowErrorIcon}" />
 
         <avalonedit:TextEditor
             Name="SqlEditor"

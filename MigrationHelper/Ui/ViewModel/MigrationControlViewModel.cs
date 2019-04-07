@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -102,6 +103,23 @@ namespace MigrationHelper.Ui.ViewModel
             set => SetField(ref _showErrorControl, value);
         }
 
+        private Visibility _showErrorIcon = Visibility.Hidden;
+
+        public Visibility ShowErrorIcon
+        {
+            get => _showErrorIcon;
+            set => SetField(ref _showErrorIcon, value);
+        }
+
+        private Visibility _showValidIcon = Visibility.Hidden;
+
+        public Visibility ShowValidIcon
+        {
+            get => _showValidIcon;
+            set => SetField(ref _showValidIcon, value);
+        }
+
+
         /// <summary>
         /// Backing field for <see cref="ErrorList"/>
         /// </summary>
@@ -191,6 +209,9 @@ namespace MigrationHelper.Ui.ViewModel
             _textGetSet.Set("");
             ShowErrorControl = false;
             ErrorList = new ObservableCollection<ErrorEntry>();
+
+            ShowErrorIcon = Visibility.Hidden;
+            ShowValidIcon = Visibility.Hidden;
         }
 
         /// <summary>
@@ -214,12 +235,16 @@ namespace MigrationHelper.Ui.ViewModel
                 if (!result.valid)
                 {
                     ShowErrorControl = true;
+                    ShowErrorIcon = Visibility.Visible;
+                    ShowValidIcon = Visibility.Hidden;
                     ErrorList = new ObservableCollection<ErrorEntry>(result.errors);
                     return false;
                 }
                 else
                 {
                     ShowErrorControl = false;
+                    ShowErrorIcon = Visibility.Hidden;
+                    ShowValidIcon = Visibility.Visible;
                     ErrorList = new ObservableCollection<ErrorEntry>();
                     return true;
                 }
