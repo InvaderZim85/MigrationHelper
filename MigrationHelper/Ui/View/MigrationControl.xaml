@@ -8,9 +8,9 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="clr-namespace:MigrationHelper.Ui"
-    xmlns:viewModel="clr-namespace:MigrationHelper.Ui.ViewModel"
     xmlns:ui1="clr-namespace:MigrationHelper.Ui"
     xmlns:view="clr-namespace:MigrationHelper.Ui.View"
+    xmlns:viewModel="clr-namespace:MigrationHelper.Ui.ViewModel"
     d:DesignHeight="400"
     d:DesignWidth="800"
     mah:DialogParticipation.Register="{Binding}"
@@ -118,7 +118,7 @@
             Grid.ColumnSpan="3"
             BorderBrush="Black"
             BorderThickness="1"
-            FontFamily="Consolas"
+            FontFamily="Hack"
             FontSize="12"
             ShowLineNumbers="True" />
 

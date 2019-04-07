@@ -201,6 +201,9 @@ namespace MigrationHelper.Ui.ViewModel
         {
             var sql = _textGetSet.Get();
 
+            if (string.IsNullOrEmpty(sql))
+                return true;
+
             var controller = await _dialogCoordinator.ShowProgressAsync(this, "Please wait",
                 "Please wait while checking the script...");
             controller.SetIndeterminate();
