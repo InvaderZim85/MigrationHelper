@@ -36,7 +36,7 @@ namespace MigrationHelper.Ui.ViewModel
         /// <summary>
         /// Backing field for <see cref="ControlDescription"/>
         /// </summary>
-        private string _controlDescription = "CMS migration helper";
+        private string _controlDescription = "Migration helper";
 
         /// <summary>
         /// Gets or sets the description of the control
@@ -50,7 +50,7 @@ namespace MigrationHelper.Ui.ViewModel
         /// <summary>
         /// Backing field for <see cref="Title"/>
         /// </summary>
-        private string _title = "CMS Migration Helper";
+        private string _title = "Migration Helper";
 
         /// <summary>
         /// Gets or sets the title of the main window
@@ -71,7 +71,7 @@ namespace MigrationHelper.Ui.ViewModel
 
             var version = Helper.GetVersion();
 
-            Title = $"CMS Migration Helper (v{version.productVersion})";
+            Title = $"Migration Helper (v{version.productVersion})";
 
             SwitchControl(MenuItemType.Migration);
         }

@@ -103,22 +103,33 @@ namespace MigrationHelper.Ui.ViewModel
             set => SetField(ref _showErrorControl, value);
         }
 
+        /// <summary>
+        /// Backing field for <see cref="ShowErrorIcon"/>
+        /// </summary>
         private Visibility _showErrorIcon = Visibility.Hidden;
 
+        /// <summary>
+        /// Gets or sets the visibility of the error icon
+        /// </summary>
         public Visibility ShowErrorIcon
         {
             get => _showErrorIcon;
             set => SetField(ref _showErrorIcon, value);
         }
 
+        /// <summary>
+        /// Backing field for <see cref="ShowValidIcon"/>
+        /// </summary>
         private Visibility _showValidIcon = Visibility.Hidden;
 
+        /// <summary>
+        /// Gets or sets the visibility of the valid icon
+        /// </summary>
         public Visibility ShowValidIcon
         {
             get => _showValidIcon;
             set => SetField(ref _showValidIcon, value);
         }
-
 
         /// <summary>
         /// Backing field for <see cref="ErrorList"/>
