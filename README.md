@@ -4,7 +4,7 @@ When you use [dbup](https://dbup.github.io) you can use this small tool to add a
 
 ## Usage
 ### Preparations
-Open the tool and add the path to you migration project and the name of the script directory (if exists, otherwise leave it empty).
+Open the tool and add the path of your migration project and the name of the script directory (if exists, otherwise leave it empty).
 
 ![001](Images/001.png)
 
