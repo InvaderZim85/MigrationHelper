@@ -52,6 +52,7 @@
             Grid.ColumnSpan="2"
             Margin="3"
             AutoGenerateColumns="False"
+            GridLinesVisibility="Horizontal"
             IsReadOnly="True"
             ItemsSource="{Binding ElementName=Control, Path=ErrorList}"
             MouseDoubleClick="Control_OnMouseDoubleClick"

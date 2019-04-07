@@ -63,6 +63,7 @@
         <Label
             Grid.Row="1"
             Grid.Column="0"
+            HorizontalAlignment="Right"
             Content="Script dir:" />
         <TextBox
             Grid.Row="1"
@@ -81,6 +82,7 @@
         <Label
             Grid.Row="4"
             Grid.Column="0"
+            HorizontalAlignment="Right"
             Content="Filename:" />
         <TextBox
             Grid.Row="4"
