@@ -7,8 +7,8 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="clr-namespace:MigrationHelper.Ui"
-    xmlns:viewModel="clr-namespace:MigrationHelper.Ui.ViewModel"
     xmlns:ui1="clr-namespace:MigrationHelper.Ui"
+    xmlns:viewModel="clr-namespace:MigrationHelper.Ui.ViewModel"
     Title="{Binding Title}"
     Width="800"
     Height="600"
@@ -32,10 +32,17 @@
                 Command="{Binding MenuCommand}"
                 CommandParameter="{x:Static ui1:MenuItemType.Migration}"
                 Header="Migration" />
-            <MenuItem
-                Command="{Binding MenuCommand}"
-                CommandParameter="{x:Static ui1:MenuItemType.Info}"
-                Header="Info" />
+            <MenuItem Header="Help">
+                <MenuItem
+                    Command="{Binding MenuCommand}"
+                    CommandParameter="{x:Static ui1:MenuItemType.Manual}"
+                    Header="Manual" />
+                <MenuItem
+                    Command="{Binding MenuCommand}"
+                    CommandParameter="{x:Static ui1:MenuItemType.Info}"
+                    Header="About" />
+            </MenuItem>
+
         </Menu>
 
         <StatusBar DockPanel.Dock="Bottom">

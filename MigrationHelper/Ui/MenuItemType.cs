@@ -18,6 +18,11 @@
         /// <summary>
         /// Shows the migration control
         /// </summary>
-        Migration
+        Migration,
+
+        /// <summary>
+        /// Shows the manual
+        /// </summary>
+        Manual
     }
 }

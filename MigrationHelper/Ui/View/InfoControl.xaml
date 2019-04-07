@@ -22,6 +22,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -29,62 +31,78 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Label
+        <TextBlock
             Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="3"
+            VerticalAlignment="Center">
+            Migration Helper by A. Pouwels.<LineBreak />
+            For more information see here: <Hyperlink NavigateUri="https://github.com/InvaderZim85/MigrationHelper" RequestNavigate="Hyperlink_OnRequestNavigate">MigrationHelper on GitHub</Hyperlink>
+        </TextBlock>
+
+        <Separator
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="3" />
+
+        <Label
+            Grid.Row="2"
             Grid.Column="0"
             HorizontalAlignment="Right"
             Content="Name:" />
         <TextBox
-            Grid.Row="0"
+            Grid.Row="2"
             Grid.Column="1"
             Margin="3"
             IsReadOnly="True"
             Text="{Binding Name}" />
 
         <Label
-            Grid.Row="1"
+            Grid.Row="3"
             Grid.Column="0"
             HorizontalAlignment="Right"
             Content="Original name:" />
         <TextBox
-            Grid.Row="1"
+            Grid.Row="3"
             Grid.Column="1"
             Margin="3"
             IsReadOnly="True"
             Text="{Binding OriginalName}" />
 
         <Label
-            Grid.Row="2"
+            Grid.Row="4"
             Grid.Column="0"
             HorizontalAlignment="Right"
             Content="File version:" />
         <TextBox
-            Grid.Row="2"
+            Grid.Row="4"
             Grid.Column="1"
             Margin="3"
             IsReadOnly="True"
             Text="{Binding FileVersion}" />
 
         <Label
-            Grid.Row="3"
+            Grid.Row="5"
             Grid.Column="0"
             HorizontalAlignment="Right"
             Content="Product version:" />
         <TextBox
-            Grid.Row="3"
+            Grid.Row="5"
             Grid.Column="1"
             Margin="3"
             IsReadOnly="True"
             Text="{Binding ProductVersion}" />
 
         <Label
-            Grid.Row="4"
+            Grid.Row="6"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Content="This program uses the following external packages (packages provides via NuGet)" />
 
         <DataGrid
-            Grid.Row="5"
+            Grid.Row="7"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Margin="3"

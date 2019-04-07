@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Shapes;
 using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Build.Evaluation;
 using MigrationHelper.Ui.View;
+using ZimLabs.Utility;
 using ZimLabs.WpfBase;
+using Path = System.IO.Path;
 
 namespace MigrationHelper.Ui.ViewModel
 {
@@ -105,7 +110,11 @@ namespace MigrationHelper.Ui.ViewModel
                         break;
                     case MenuItemType.Close:
                         Application.Current.Shutdown();
-                        break;
+                        return;
+                    case MenuItemType.Manual:
+                        var path = Path.Combine(Global.GetBaseFolder(), "Manual.pdf");
+                        Process.Start(path);
+                        return;
                     default:
                         await _dialogCoordinator.ShowMessageAsync(this, "Error", "The given type is not supported.");
                         break;

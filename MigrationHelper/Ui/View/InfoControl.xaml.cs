@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
 using MahApps.Metro.Controls.Dialogs;
 using MigrationHelper.Ui.ViewModel;
 
@@ -39,6 +41,14 @@ namespace MigrationHelper.Ui.View
         {
             if (DataContext is InfoControlViewModel viewModel)
                 viewModel.LoadData();
+        }
+
+        /// <summary>
+        /// Occurs when the user hits the link
+        /// </summary>
+        private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(e.Uri.ToString());
         }
     }
 }
