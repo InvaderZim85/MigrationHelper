@@ -1,9 +1,9 @@
 ﻿using System.Windows.Controls;
-using CmsMigrationHelper.DataObjects;
-using CmsMigrationHelper.Ui.ViewModel;
 using MahApps.Metro.Controls.Dialogs;
+using MigrationHelper.DataObjects;
+using MigrationHelper.Ui.ViewModel;
 
-namespace CmsMigrationHelper.Ui.View
+namespace MigrationHelper.Ui.View
 {
     /// <summary>
     /// Interaction logic for MigrationControl.xaml

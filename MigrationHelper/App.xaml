@@ -1,8 +1,8 @@
 ﻿<Application
-    x:Class="CmsMigrationHelper.App"
+    x:Class="MigrationHelper.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:CmsMigrationHelper"
+    xmlns:local="clr-namespace:MigrationHelper"
     StartupUri="Ui/View/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>

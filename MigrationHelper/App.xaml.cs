@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace CmsMigrationHelper
+namespace MigrationHelper
 {
     /// <summary>
     /// Interaction logic for App.xaml

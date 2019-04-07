@@ -1,4 +1,4 @@
-﻿namespace CmsMigrationHelper.Ui.View
+﻿namespace MigrationHelper.Ui.View
 {
     internal interface IUserControl
     {

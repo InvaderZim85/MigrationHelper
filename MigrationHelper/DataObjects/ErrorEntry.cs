@@ -1,6 +1,6 @@
 ﻿using Microsoft.SqlServer.Management.SqlParser.Parser;
 
-namespace CmsMigrationHelper.DataObjects
+namespace MigrationHelper.DataObjects
 {
     public class ErrorEntry
     {

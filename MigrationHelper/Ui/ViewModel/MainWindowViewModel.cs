@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
-using CmsMigrationHelper.Ui.View;
 using MahApps.Metro.Controls.Dialogs;
+using MigrationHelper.Ui.View;
 using ZimLabs.WpfBase;
 
-namespace CmsMigrationHelper.Ui.ViewModel
+namespace MigrationHelper.Ui.ViewModel
 {
     public class MainWindowViewModel : ObservableObject
     {

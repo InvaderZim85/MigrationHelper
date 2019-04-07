@@ -1,4 +1,4 @@
-﻿namespace CmsMigrationHelper.DataObjects
+﻿namespace MigrationHelper.DataObjects
 {
     public class ReferenceEntry
     {

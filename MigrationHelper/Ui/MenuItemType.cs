@@ -1,4 +1,4 @@
-﻿namespace CmsMigrationHelper.Ui
+﻿namespace MigrationHelper.Ui
 {
     /// <summary>
     /// Contains the different menu items

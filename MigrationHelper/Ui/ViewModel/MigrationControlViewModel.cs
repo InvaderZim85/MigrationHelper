@@ -3,14 +3,12 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using CmsMigrationHelper.DataObjects;
-using CmsMigrationHelper.Ui.View;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using Microsoft.WindowsAPICodePack.ShellExtensions;
+using MigrationHelper.DataObjects;
 using ZimLabs.WpfBase;
 
-namespace CmsMigrationHelper.Ui.ViewModel
+namespace MigrationHelper.Ui.ViewModel
 {
     public class MigrationControlViewModel : ObservableObject
     {
@@ -254,6 +252,13 @@ namespace CmsMigrationHelper.Ui.ViewModel
             {
                 var result = await CheckSql();
                 if (!result)
+                    return;
+            }
+            else
+            {
+                if (await _dialogCoordinator.ShowMessageAsync(this, "Create script",
+                        "Do you really want to create the script without check?",
+                        MessageDialogStyle.AffirmativeAndNegative) == MessageDialogResult.Negative)
                     return;
             }
 

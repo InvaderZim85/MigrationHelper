@@ -2,9 +2,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using CmsMigrationHelper.DataObjects;
+using MigrationHelper.DataObjects;
 
-namespace CmsMigrationHelper.Ui.View
+namespace MigrationHelper.Ui.View
 {
     /// <summary>
     /// Interaction logic for SqlErrorControl.xaml

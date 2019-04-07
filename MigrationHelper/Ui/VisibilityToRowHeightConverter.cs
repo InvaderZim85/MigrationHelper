@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace CmsMigrationHelper.Ui
+namespace MigrationHelper.Ui
 {
     public class VisibilityToRowHeightConverter : IValueConverter
     {

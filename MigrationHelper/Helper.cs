@@ -6,15 +6,15 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml;
-using CmsMigrationHelper.DataObjects;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using Microsoft.Build.Evaluation;
 using Microsoft.SqlServer.Management.SqlParser.Parser;
+using MigrationHelper.DataObjects;
 using NuGet;
 using ZimLabs.Utility;
 
-namespace CmsMigrationHelper
+namespace MigrationHelper
 {
     public static class Helper
     {

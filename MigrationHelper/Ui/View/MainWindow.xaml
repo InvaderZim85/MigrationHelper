@@ -1,13 +1,14 @@
 ﻿<mah:MetroWindow
-    x:Class="CmsMigrationHelper.Ui.View.MainWindow"
+    x:Class="MigrationHelper.Ui.View.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:CmsMigrationHelper.Ui.View"
+    xmlns:local="clr-namespace:MigrationHelper.Ui.View"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ui="clr-namespace:CmsMigrationHelper.Ui"
-    xmlns:viewModel="clr-namespace:CmsMigrationHelper.Ui.ViewModel"
+    xmlns:ui="clr-namespace:MigrationHelper.Ui"
+    xmlns:viewModel="clr-namespace:MigrationHelper.Ui.ViewModel"
+    xmlns:ui1="clr-namespace:MigrationHelper.Ui"
     Title="{Binding Title}"
     Width="800"
     Height="600"
@@ -24,16 +25,16 @@
             <MenuItem Header="Program">
                 <MenuItem
                     Command="{Binding MenuCommand}"
-                    CommandParameter="{x:Static ui:MenuItemType.Close}"
+                    CommandParameter="{x:Static ui1:MenuItemType.Close}"
                     Header="Close" />
             </MenuItem>
             <MenuItem
                 Command="{Binding MenuCommand}"
-                CommandParameter="{x:Static ui:MenuItemType.Migration}"
+                CommandParameter="{x:Static ui1:MenuItemType.Migration}"
                 Header="Migration" />
             <MenuItem
                 Command="{Binding MenuCommand}"
-                CommandParameter="{x:Static ui:MenuItemType.Info}"
+                CommandParameter="{x:Static ui1:MenuItemType.Info}"
                 Header="Info" />
         </Menu>
 

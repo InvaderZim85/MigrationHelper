@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using CmsMigrationHelper.DataObjects;
 using MahApps.Metro.Controls.Dialogs;
+using MigrationHelper.DataObjects;
 using ZimLabs.WpfBase;
 
-namespace CmsMigrationHelper.Ui.ViewModel
+namespace MigrationHelper.Ui.ViewModel
 {
     public class InfoControlViewModel : ObservableObject
     {

@@ -1,9 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using CmsMigrationHelper.Ui.ViewModel;
 using MahApps.Metro.Controls.Dialogs;
+using MigrationHelper.Ui.ViewModel;
 
-namespace CmsMigrationHelper.Ui.View
+namespace MigrationHelper.Ui.View
 {
     /// <summary>
     /// Interaction logic for InfoControl.xaml
