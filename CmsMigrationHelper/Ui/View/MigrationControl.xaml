@@ -7,14 +7,18 @@
     xmlns:local="clr-namespace:CmsMigrationHelper.Ui.View"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:CmsMigrationHelper.Ui"
     xmlns:viewModel="clr-namespace:CmsMigrationHelper.Ui.ViewModel"
-    d:DesignHeight="450"
+    d:DesignHeight="400"
     d:DesignWidth="800"
     mah:DialogParticipation.Register="{Binding}"
     mc:Ignorable="d">
     <UserControl.DataContext>
         <viewModel:MigrationControlViewModel />
     </UserControl.DataContext>
+    <UserControl.Resources>
+        <ui:VisibilityToRowHeightConverter x:Key="VisibilityToRowHeightConverter" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -25,6 +29,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="{Binding ShowErrorControl, Converter={StaticResource VisibilityToRowHeightConverter}}" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -93,6 +99,15 @@
             Grid.Column="0"
             Grid.ColumnSpan="3"
             Content="Content of the migration file:" />
+        <Button
+            Grid.Row="6"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Width="80"
+            Margin="3"
+            HorizontalAlignment="Right"
+            Command="{Binding CheckCommand}"
+            Content="Check SQL" />
 
         <avalonedit:TextEditor
             Name="SqlEditor"
@@ -105,8 +120,23 @@
             FontSize="12"
             ShowLineNumbers="True" />
 
-        <Button
+        <!--  Error Window!  -->
+        <GridSplitter
             Grid.Row="8"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Height="3"
+            HorizontalAlignment="Stretch" />
+        <local:SqlErrorControl
+            Grid.Row="9"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            DoubleClick="SqlErrorControl_OnDoubleClick"
+            ErrorList="{Binding ErrorList}"
+            Visibility="{Binding ShowErrorControl, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+        <Button
+            Grid.Row="10"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Width="110"
@@ -116,7 +146,7 @@
             Content="Open existing file" />
 
         <StackPanel
-            Grid.Row="8"
+            Grid.Row="10"
             Grid.Column="0"
             Grid.ColumnSpan="3"
             FlowDirection="RightToLeft"
@@ -127,10 +157,16 @@
                 Command="{Binding ClearCommand}"
                 Content="Clear" />
             <Button
-                Width="50"
+                Width="140"
                 Margin="3"
-                Command="{Binding CreateCommand}"
-                Content="Create"
+                Command="{Binding CreateWithCheckCommand}"
+                Content="Create with check"
+                IsEnabled="{Binding CreateButtonEnabled}" />
+            <Button
+                Width="140"
+                Margin="3"
+                Command="{Binding CreateWithoutCheckCommand}"
+                Content="Create without check"
                 IsEnabled="{Binding CreateButtonEnabled}" />
         </StackPanel>
     </Grid>

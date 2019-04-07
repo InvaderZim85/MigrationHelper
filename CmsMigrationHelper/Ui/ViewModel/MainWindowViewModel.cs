@@ -50,7 +50,7 @@ namespace CmsMigrationHelper.Ui.ViewModel
         /// <summary>
         /// Backing field for <see cref="Title"/>
         /// </summary>
-        private string _title;
+        private string _title = "CMS Migration Helper";
 
         /// <summary>
         /// Gets or sets the title of the main window

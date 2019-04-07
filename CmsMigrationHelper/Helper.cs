@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Xml;
 using CmsMigrationHelper.DataObjects;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using Microsoft.Build.Evaluation;
+using Microsoft.SqlServer.Management.SqlParser.Parser;
 using NuGet;
 using ZimLabs.Utility;
 
@@ -117,6 +120,22 @@ namespace CmsMigrationHelper
         {
             var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
             return (version.InternalName, version.OriginalFilename, version.FileVersion, version.ProductVersion);
+        }
+
+        /// <summary>
+        /// Checks if the given sql is valid
+        /// </summary>
+        /// <param name="content">The sql script</param>
+        /// <returns>The result</returns>
+        public static async Task<(bool valid, List<ErrorEntry> errors)> IsSqlValid(string content)
+        {
+            if (string.IsNullOrEmpty(content))
+                return (false, null);
+
+            var result = await Task.Run(() => Parser.Parse(content));
+
+            var errorList = result.Errors.ToList().Select(s => (ErrorEntry) s).ToList();
+            return (errorList.Count == 0, errorList);
         }
     }
 }

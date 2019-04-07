@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using CmsMigrationHelper.DataObjects;
+using CmsMigrationHelper.Ui.View;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Microsoft.WindowsAPICodePack.ShellExtensions;
 using ZimLabs.WpfBase;
 
 namespace CmsMigrationHelper.Ui.ViewModel
@@ -86,6 +91,34 @@ namespace CmsMigrationHelper.Ui.ViewModel
         }
 
         /// <summary>
+        /// Backing field for <see cref="ShowErrorControl"/>
+        /// </summary>
+        private bool _showErrorControl = false;
+
+        /// <summary>
+        /// Gets or sets the value which indicates if the error control should be shown
+        /// </summary>
+        public bool ShowErrorControl
+        {
+            get => _showErrorControl;
+            set => SetField(ref _showErrorControl, value);
+        }
+
+        /// <summary>
+        /// Backing field for <see cref="ErrorList"/>
+        /// </summary>
+        private ObservableCollection<ErrorEntry> _errorList;
+
+        /// <summary>
+        /// Gets or sets the list with the errors
+        /// </summary>
+        public ObservableCollection<ErrorEntry> ErrorList
+        {
+            get => _errorList;
+            set => SetField(ref _errorList, value);
+        }
+
+        /// <summary>
         /// Init the view model
         /// </summary>
         /// <param name="dialogCoordinator">The mah apps dialog coordinator</param>
@@ -113,12 +146,22 @@ namespace CmsMigrationHelper.Ui.ViewModel
         /// <summary>
         /// The command to create the migration file
         /// </summary>
-        public ICommand CreateCommand => new DelegateCommand(CreateMigrationFile);
+        public ICommand CreateWithCheckCommand => new DelegateCommand(() => CreateScript(true));
 
         /// <summary>
         /// The command to load an existing file
         /// </summary>
         public ICommand OpenExistingFileCommand => new DelegateCommand(OpenExistingFile);
+
+        /// <summary>
+        /// The command to create the migration file without a check
+        /// </summary>
+        public ICommand CreateWithoutCheckCommand => new DelegateCommand(() => CreateScript(false));
+
+        /// <summary>
+        /// The command to check the sql script
+        /// </summary>
+        public ICommand CheckCommand => new DelegateCommand(CheckSqlScript);
 
         /// <summary>
         /// Opens the project file
@@ -148,16 +191,87 @@ namespace CmsMigrationHelper.Ui.ViewModel
         {
             Filename = "";
             _textGetSet.Set("");
+            ShowErrorControl = false;
+            ErrorList = new ObservableCollection<ErrorEntry>();
+        }
+
+        /// <summary>
+        /// Checks the inserted sql script
+        /// </summary>
+        /// <returns>true when valid, otherwise false</returns>
+        private async Task<bool> CheckSql()
+        {
+            var sql = _textGetSet.Get();
+
+            var controller = await _dialogCoordinator.ShowProgressAsync(this, "Please wait",
+                "Please wait while checking the script...");
+            controller.SetIndeterminate();
+
+            try
+            {
+                var result = await Helper.IsSqlValid(sql);
+                if (!result.valid)
+                {
+                    ShowErrorControl = true;
+                    ErrorList = new ObservableCollection<ErrorEntry>(result.errors);
+                    return false;
+                }
+                else
+                {
+                    ShowErrorControl = false;
+                    ErrorList = new ObservableCollection<ErrorEntry>();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                await _dialogCoordinator.ShowMessageAsync(this, "Error", $"An error has occured: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                await controller.CloseAsync();
+            }
+        }
+
+        /// <summary>
+        /// Checks the sql script
+        /// </summary>
+        private async void CheckSqlScript()
+        {
+            await CheckSql();
+        }
+
+        /// <summary>
+        /// Creates the migration script 
+        /// </summary>
+        /// <param name="withCheck">true to check the sql script, otherwise false</param>
+        private async void CreateScript(bool withCheck)
+        {
+            var sql = _textGetSet.Get();
+
+            if (withCheck)
+            {
+                var result = await CheckSql();
+                if (!result)
+                    return;
+            }
+
+            CreateMigrationFile(sql);
         }
 
         /// <summary>
         /// Creates the migration file
         /// </summary>
-        private async void CreateMigrationFile()
+        /// <param name="sql">The sql script</param>
+        private async void CreateMigrationFile(string sql)
         {
+            var controller = await _dialogCoordinator.ShowProgressAsync(this, "Please wait",
+                "Please wait while creating the migration script...");
+
             try
             {
-                var (successful, filename) = Helper.CreateMigrationFile(Filename, _textGetSet.Get());
+                var (successful, filename) = await Task.Run(() => Helper.CreateMigrationFile(Filename, sql));
 
                 if (successful)
                 {
@@ -173,6 +287,10 @@ namespace CmsMigrationHelper.Ui.ViewModel
             {
                 await _dialogCoordinator.ShowMessageAsync(this, "Error",
                     $"An error has occured.\r\n\r\nMessage: {ex.Message}");
+            }
+            finally
+            {
+                await controller.CloseAsync();
             }
         }
 

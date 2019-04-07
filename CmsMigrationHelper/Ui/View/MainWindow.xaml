@@ -10,7 +10,7 @@
     xmlns:viewModel="clr-namespace:CmsMigrationHelper.Ui.ViewModel"
     Title="{Binding Title}"
     Width="800"
-    Height="450"
+    Height="600"
     mah:DialogParticipation.Register="{Binding}"
     Loaded="MainWindow_OnLoaded"
     ResizeMode="CanResizeWithGrip"
