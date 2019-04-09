@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.IO;
+using System.Windows.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MigrationHelper.DataObjects;
 using MigrationHelper.Ui.ViewModel;
@@ -33,6 +34,7 @@ namespace MigrationHelper.Ui.View
             if (DataContext is MigrationControlViewModel viewModel)
                 viewModel.InitViewModel(DialogCoordinator.Instance, (SetSqlText, GetSqlText));
 
+            FileList.InitControl();
         }
 
         /// <summary>
@@ -63,6 +65,16 @@ namespace MigrationHelper.Ui.View
             SqlEditor.ScrollTo(entry.Line, entry.Column);
             SqlEditor.TextArea.Caret.Line = entry.Line;
             SqlEditor.TextArea.Caret.Column = entry.Column;
+        }
+
+        /// <summary>
+        /// Occurs when the user selects a file in the file list
+        /// </summary>
+        /// <param name="file">The selected file</param>
+        private void FileList_OnSelectionChanged(FileInfo file)
+        {
+            if (DataContext is MigrationControlViewModel viewModel)
+                viewModel.OpenSelectedFile(file);
         }
     }
 }

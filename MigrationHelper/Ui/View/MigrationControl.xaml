@@ -9,8 +9,6 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="clr-namespace:MigrationHelper.Ui"
-    xmlns:ui1="clr-namespace:MigrationHelper.Ui"
-    xmlns:view="clr-namespace:MigrationHelper.Ui.View"
     xmlns:viewModel="clr-namespace:MigrationHelper.Ui.ViewModel"
     d:DesignHeight="400"
     d:DesignWidth="800"
@@ -20,7 +18,7 @@
         <viewModel:MigrationControlViewModel />
     </UserControl.DataContext>
     <UserControl.Resources>
-        <ui1:VisibilityToRowHeightConverter x:Key="VisibilityToRowHeightConverter" />
+        <ui:VisibilityToRowHeightConverter x:Key="VisibilityToRowHeightConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -39,9 +37,17 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="250" />
         </Grid.ColumnDefinitions>
+
+        <local:FileListControl
+            x:Name="FileList"
+            Grid.Row="0"
+            Grid.RowSpan="11"
+            Grid.Column="3"
+            SelectionChanged="FileList_OnSelectionChanged" />
 
         <Label
             Grid.Row="0"
@@ -152,7 +158,7 @@
             Grid.ColumnSpan="3"
             Height="3"
             HorizontalAlignment="Stretch" />
-        <view:SqlErrorControl
+        <local:SqlErrorControl
             Grid.Row="9"
             Grid.Column="0"
             Grid.ColumnSpan="3"
@@ -182,16 +188,10 @@
                 Command="{Binding ClearCommand}"
                 Content="Clear" />
             <Button
-                Width="140"
+                Width="50"
                 Margin="3"
-                Command="{Binding CreateWithCheckCommand}"
-                Content="Create with check"
-                IsEnabled="{Binding CreateButtonEnabled}" />
-            <Button
-                Width="140"
-                Margin="3"
-                Command="{Binding CreateWithoutCheckCommand}"
-                Content="Create without check"
+                Command="{Binding SaveCommand}"
+                Content="Save"
                 IsEnabled="{Binding CreateButtonEnabled}" />
         </StackPanel>
     </Grid>

@@ -24,6 +24,11 @@ namespace MigrationHelper.Ui.ViewModel
         private (Action<string> Set, Func<string> Get) _textGetSet;
 
         /// <summary>
+        /// Contains the selected sql file
+        /// </summary>
+        private FileInfo _sqlFile;
+
+        /// <summary>
         /// Backing field for <see cref="ProjectFile"/>
         /// </summary>
         private string _projectFile;
@@ -171,24 +176,19 @@ namespace MigrationHelper.Ui.ViewModel
         public ICommand ClearCommand => new DelegateCommand(Clear);
 
         /// <summary>
-        /// The command to create the migration file
-        /// </summary>
-        public ICommand CreateWithCheckCommand => new DelegateCommand(() => CreateScript(true));
-
-        /// <summary>
         /// The command to load an existing file
         /// </summary>
         public ICommand OpenExistingFileCommand => new DelegateCommand(OpenExistingFile);
 
         /// <summary>
-        /// The command to create the migration file without a check
-        /// </summary>
-        public ICommand CreateWithoutCheckCommand => new DelegateCommand(() => CreateScript(false));
-
-        /// <summary>
         /// The command to check the sql script
         /// </summary>
-        public ICommand CheckCommand => new DelegateCommand(CheckSqlScript);
+        public ICommand CheckCommand => new DelegateCommand(CheckScript);
+
+        /// <summary>
+        /// The command to save the script
+        /// </summary>
+        public ICommand SaveCommand => new DelegateCommand(SaveScript);
 
         /// <summary>
         /// Opens the project file
@@ -223,18 +223,19 @@ namespace MigrationHelper.Ui.ViewModel
 
             ShowErrorIcon = Visibility.Hidden;
             ShowValidIcon = Visibility.Hidden;
+
+            _sqlFile = null;
         }
 
         /// <summary>
-        /// Checks the inserted sql script
+        /// Checks the sql script
         /// </summary>
-        /// <returns>true when valid, otherwise false</returns>
-        private async Task<bool> CheckSql()
+        private async Task<bool> CheckSqlScript()
         {
             var sql = _textGetSet.Get();
 
             if (string.IsNullOrEmpty(sql))
-                return true;
+                return false;
 
             var controller = await _dialogCoordinator.ShowProgressAsync(this, "Please wait",
                 "Please wait while checking the script...");
@@ -243,21 +244,21 @@ namespace MigrationHelper.Ui.ViewModel
             try
             {
                 var result = await Helper.IsSqlValid(sql);
-                if (!result.valid)
-                {
-                    ShowErrorControl = true;
-                    ShowErrorIcon = Visibility.Visible;
-                    ShowValidIcon = Visibility.Hidden;
-                    ErrorList = new ObservableCollection<ErrorEntry>(result.errors);
-                    return false;
-                }
-                else
+                if (result.valid)
                 {
                     ShowErrorControl = false;
                     ShowErrorIcon = Visibility.Hidden;
                     ShowValidIcon = Visibility.Visible;
                     ErrorList = new ObservableCollection<ErrorEntry>();
                     return true;
+                }
+                else
+                {
+                    ShowErrorControl = true;
+                    ShowErrorIcon = Visibility.Visible;
+                    ShowValidIcon = Visibility.Hidden;
+                    ErrorList = new ObservableCollection<ErrorEntry>(result.errors);
+                    return false;
                 }
             }
             catch (Exception ex)
@@ -272,36 +273,50 @@ namespace MigrationHelper.Ui.ViewModel
         }
 
         /// <summary>
-        /// Checks the sql script
+        /// Starts the sql script check
         /// </summary>
-        private async void CheckSqlScript()
+        private async void CheckScript()
         {
-            await CheckSql();
+            await CheckSqlScript();
         }
 
         /// <summary>
-        /// Creates the migration script 
+        /// Saves the script
         /// </summary>
-        /// <param name="withCheck">true to check the sql script, otherwise false</param>
-        private async void CreateScript(bool withCheck)
+        private async void SaveScript()
         {
             var sql = _textGetSet.Get();
 
-            if (withCheck)
-            {
-                var result = await CheckSql();
-                if (!result)
-                    return;
-            }
-            else
-            {
-                if (await _dialogCoordinator.ShowMessageAsync(this, "Create script",
-                        "Do you really want to create the script without check?",
-                        MessageDialogStyle.AffirmativeAndNegative) == MessageDialogResult.Negative)
-                    return;
-            }
+            if (string.IsNullOrEmpty(sql))
+                return;
 
-            CreateMigrationFile(sql);
+            var controller = await _dialogCoordinator.ShowProgressAsync(this, "Please wait",
+                "Please wait while checking the script...");
+            controller.SetIndeterminate();
+
+            try
+            {
+                var sqlValid = await CheckSqlScript();
+                var saveScript = true;
+
+                if (!sqlValid)
+                {
+                    saveScript = await _dialogCoordinator.ShowMessageAsync(this, "SQL",
+                                     "The sql script is not valid. Do you really want to save it?",
+                                     MessageDialogStyle.AffirmativeAndNegative) == MessageDialogResult.Affirmative;
+                }
+
+                if (saveScript)
+                    CreateMigrationFile(sql);
+            }
+            catch (Exception ex)
+            {
+                await _dialogCoordinator.ShowMessageAsync(this, "Error", $"An error has occured: {ex.Message}");
+            }
+            finally
+            {
+                await controller.CloseAsync();
+            }
         }
 
         /// <summary>
@@ -315,13 +330,13 @@ namespace MigrationHelper.Ui.ViewModel
 
             try
             {
-                var (successful, filename) = await Task.Run(() => Helper.CreateMigrationFile(Filename, sql));
+                var (successful, file) = await Task.Run(() => Helper.CreateMigrationFile(Filename, sql, _sqlFile != null));
 
                 if (successful)
                 {
+                    _sqlFile = file;
                     await _dialogCoordinator.ShowMessageAsync(this, "File",
-                        $"Migration file created. Filename: {filename}");
-                    Clear();
+                        $"Migration file created. Filename: {file.Name}");
                 }
                 else
                     await _dialogCoordinator.ShowMessageAsync(this, "Error",
@@ -359,14 +374,34 @@ namespace MigrationHelper.Ui.ViewModel
 
             try
             {
-                var content = File.ReadAllText(dialog.FileName);
-
-                _textGetSet.Set(content);
+                SetSqlText(dialog.FileName);
             }
             catch (Exception ex)
             {
                 await _dialogCoordinator.ShowMessageAsync(this, "Error", $"An error has occured while loading the content of the selected file.\r\n\r\nMessage: {ex.Message}"); 
             }
+        }
+
+        /// <summary>
+        /// Opens an existing file
+        /// </summary>
+        /// <param name="file">The file</param>
+        public void OpenSelectedFile(FileInfo file)
+        {
+            _sqlFile = file;
+
+            Filename = file.Name.Replace(file.Extension, "");
+
+            SetSqlText(file.FullName);
+        }
+
+        /// <summary>
+        /// Loads the text of a given file and shows it
+        /// </summary>
+        /// <param name="filepath">The path of the file</param>
+        private void SetSqlText(string filepath)
+        {
+            _textGetSet.Set(File.ReadAllText(filepath));
         }
     }
 }

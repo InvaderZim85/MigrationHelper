@@ -1,23 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Xml;
-using ICSharpCode.AvalonEdit.Highlighting;
+﻿using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using Microsoft.Build.Evaluation;
 using Microsoft.SqlServer.Management.SqlParser.Parser;
 using MigrationHelper.DataObjects;
 using NuGet;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Xml;
 using ZimLabs.Utility;
+using ZimLabs.Utility.Extensions;
 
 namespace MigrationHelper
 {
     public static class Helper
     {
+        /// <summary>
+        /// Contains the project
+        /// </summary>
+        private static Project _project;
+
         /// <summary>
         /// Loads the highlight definition for the avalon editor
         /// </summary>
@@ -40,12 +47,13 @@ namespace MigrationHelper
         /// </summary>
         /// <param name="filename">The name of the desired file</param>
         /// <param name="content">The content of the file</param>
+        /// <param name="existingFile">true when the user has open an existing file</param>
         /// <returns>A bool which indicates if the action was successful and the created file name</returns>
         /// <exception cref="ArgumentNullException">Will be thrown if the filename is null or empty</exception>
         /// <exception cref="ArgumentException">Will be thrown if the project file wasn't set</exception>
         /// <exception cref="FileNotFoundException">Will be thrown if the project file doesn't exit</exception>
         /// <exception cref="DirectoryNotFoundException">Will be thrown when the directory of the project file cannot be determined</exception>
-        public static (bool successful, string filename) CreateMigrationFile(string filename, string content)
+        public static (bool successful, FileInfo file) CreateMigrationFile(string filename, string content, bool existingFile)
         {
             // Step 0: Check the given parameters and the project file
             if (string.IsNullOrEmpty(filename))
@@ -67,7 +75,7 @@ namespace MigrationHelper
                 ? projectDir
                 : Path.Combine(projectDir, Properties.Settings.Default.ScriptDirectory);
 
-            var scriptName = $"{DateTime.Now:yyMMddHHmmss}_{filename}.sql";
+            var scriptName = CreateFilename(filename);
             var resourcePath = string.IsNullOrEmpty(Properties.Settings.Default.ScriptDirectory)
                 ? scriptName
                 : Path.Combine(Properties.Settings.Default.ScriptDirectory, scriptName);
@@ -77,11 +85,26 @@ namespace MigrationHelper
             // Step 2: "Create" the file with the given content
             File.WriteAllText(destinationPath, content);
 
-            var project = new Project(Properties.Settings.Default.ProjectFile);
-            project.AddItem("EmbeddedResource", resourcePath);
-            project.Save();
+            // Add the file to the project when it doesn't exist
+            if (!existingFile)
+            {
+                LoadProject();
+                _project.AddItem("EmbeddedResource", resourcePath);
+                _project.Save();
+            }
 
-            return (true, scriptName);
+            return (true, new FileInfo(destinationPath));
+        }
+
+        /// <summary>
+        /// Creates a new file name with the date / time pattern
+        /// </summary>
+        /// <param name="filename">The desired file name</param>
+        /// <returns>The created file name</returns>
+        private static string CreateFilename(string filename)
+        {
+            var checkPattern = new Regex(@"^\d{12,}");
+            return checkPattern.IsMatch(filename) ? filename : $"{DateTime.Now:yyMMddHHmmss}_{filename}.sql";
         }
 
         /// <summary>
@@ -113,6 +136,45 @@ namespace MigrationHelper
         }
 
         /// <summary>
+        /// Loads the script files
+        /// </summary>
+        /// <returns></returns>
+        public static List<FileInfo> LoadScriptFiles()
+        {
+            var projectFiles = LoadProjectFiles();
+
+            var projectDir = Path.GetDirectoryName(Properties.Settings.Default.ProjectFile);
+            if (string.IsNullOrEmpty(projectDir) || !Directory.Exists(projectDir))
+                throw new DirectoryNotFoundException("The given directory doesn't exist.");
+
+            var fileDir = string.IsNullOrEmpty(Properties.Settings.Default.ScriptDirectory)
+                ? projectDir
+                : Path.Combine(projectDir, Properties.Settings.Default.ScriptDirectory);
+
+            var dirInfo = new DirectoryInfo(fileDir);
+            var files = dirInfo.GetFiles("*.sql", SearchOption.AllDirectories);
+
+            return files.Where(w => projectFiles.Any(a => a.EqualsIgnoreCase(w.Name))).ToList();
+        }
+
+        /// <summary>
+        /// Loads the files of the project
+        /// </summary>
+        /// <returns></returns>
+        private static List<string> LoadProjectFiles()
+        {
+            if (string.IsNullOrEmpty(Properties.Settings.Default.ProjectFile))
+                throw new ArgumentException("The path of the project file is missing.");
+
+            LoadProject();
+
+            var items = _project.Items.Where(w => w.ItemType.Equals("EmbeddedResource"))
+                .Select(s => s.EvaluatedInclude).ToList();
+
+            return items.Select(Path.GetFileName).ToList();
+        }
+
+        /// <summary>
         /// Gets the version infos of the program
         /// </summary>
         /// <returns>The version infos</returns>
@@ -134,8 +196,17 @@ namespace MigrationHelper
 
             var result = await Task.Run(() => Parser.Parse(content));
 
-            var errorList = result.Errors.ToList().Select(s => (ErrorEntry) s).ToList();
+            var errorList = result.Errors.ToList().Select(s => (ErrorEntry)s).ToList();
             return (errorList.Count == 0, errorList);
+        }
+
+        /// <summary>
+        /// Loads the project if necessary
+        /// </summary>
+        private static void LoadProject()
+        {
+            if (_project == null)
+                _project = new Project(Properties.Settings.Default.ProjectFile);
         }
     }
 }
