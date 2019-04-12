@@ -24,6 +24,11 @@ namespace MigrationHelper.Ui.ViewModel
         private (Action<string> Set, Func<string> Get) _textGetSet;
 
         /// <summary>
+        /// Contains the action to update the file list
+        /// </summary>
+        private Action _updateList;
+
+        /// <summary>
         /// Contains the selected sql file
         /// </summary>
         private FileInfo _sqlFile;
@@ -154,12 +159,14 @@ namespace MigrationHelper.Ui.ViewModel
         /// Init the view model
         /// </summary>
         /// <param name="dialogCoordinator">The mah apps dialog coordinator</param>
-        /// <param name="textGetSet"></param>
+        /// <param name="textGetSet">The function to get / set the sql text</param>
+        /// <param name="updateList">The action to update the file list</param>
         public void InitViewModel(IDialogCoordinator dialogCoordinator,
-            (Action<string> setText, Func<string> getText) textGetSet)
+            (Action<string> setText, Func<string> getText) textGetSet, Action updateList)
         {
             _dialogCoordinator = dialogCoordinator;
             _textGetSet = textGetSet;
+            _updateList = updateList;
 
             ProjectFile = Properties.Settings.Default.ProjectFile;
             ScriptDir = Properties.Settings.Default.ScriptDirectory;
@@ -307,7 +314,7 @@ namespace MigrationHelper.Ui.ViewModel
                 }
 
                 if (saveScript)
-                    CreateMigrationFile(sql);
+                    SaveMigrationFile(sql);
             }
             catch (Exception ex)
             {
@@ -323,20 +330,21 @@ namespace MigrationHelper.Ui.ViewModel
         /// Creates the migration file
         /// </summary>
         /// <param name="sql">The sql script</param>
-        private async void CreateMigrationFile(string sql)
+        private async void SaveMigrationFile(string sql)
         {
             var controller = await _dialogCoordinator.ShowProgressAsync(this, "Please wait",
                 "Please wait while creating the migration script...");
 
             try
             {
-                var (successful, file) = await Task.Run(() => Helper.CreateMigrationFile(Filename, sql, _sqlFile != null));
+                var (successful, file) = await Task.Run(() => Helper.SaveMigrationFile(Filename, sql, _sqlFile != null));
 
                 if (successful)
                 {
                     _sqlFile = file;
+                    _updateList();
                     await _dialogCoordinator.ShowMessageAsync(this, "File",
-                        $"Migration file created. Filename: {file.Name}");
+                        $"Migration file created / save. Filename: {file.Name}");
                 }
                 else
                     await _dialogCoordinator.ShowMessageAsync(this, "Error",

@@ -40,6 +40,15 @@ namespace MigrationHelper.Ui.View
         }
 
         /// <summary>
+        /// Reloads the file list
+        /// </summary>
+        public void Reload()
+        {
+            if (DataContext is FileListControlViewModel viewModel)
+                viewModel.InitViewModel(SelectionChangedNotifier);
+        }
+
+        /// <summary>
         /// Fires the <see cref="SelectionChanged"/> event when the user selects another file
         /// </summary>
         /// <param name="file">The selected file</param>

@@ -69,9 +69,17 @@ namespace MigrationHelper.Ui.ViewModel
         /// <param name="setSelectedFile">The action to set the selected file</param>
         public void InitViewModel(Action<FileInfo> setSelectedFile)
         {
-            _originList = Helper.LoadScriptFiles();
-
             _setSelectedFile = setSelectedFile;
+
+            LoadFiles();
+        }
+
+        /// <summary>
+        /// Loads the files
+        /// </summary>
+        public void LoadFiles()
+        {
+            _originList = Helper.LoadScriptFiles();
 
             FilterList();
         }

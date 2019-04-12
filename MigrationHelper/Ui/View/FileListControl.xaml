@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:MigrationHelper.Ui.View"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:MigrationHelper.Ui"
     xmlns:viewModel="clr-namespace:MigrationHelper.Ui.ViewModel"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -13,6 +14,9 @@
     <UserControl.DataContext>
         <viewModel:FileListControlViewModel />
     </UserControl.DataContext>
+    <UserControl.Resources>
+        <ui:FileSizeConverter x:Key="FileSizeConverter" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -32,17 +36,27 @@
         </TextBox>
         <Separator Grid.Row="1" Margin="3" />
 
-        <ListView
+        <DataGrid
             Grid.Row="2"
-            Margin="3"
+            AutoGenerateColumns="False"
+            GridLinesVisibility="Horizontal"
+            IsReadOnly="True"
             ItemsSource="{Binding FileList}"
             SelectedItem="{Binding SelectedFile}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Label Content="{Binding Name}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Width="*"
+                    Binding="{Binding Name}"
+                    Header="File" />
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding Length, Converter={StaticResource FileSizeConverter}}"
+                    Header="Size" />
+            </DataGrid.Columns>
+            <DataGrid.InputBindings>
+                <MouseBinding Command="{Binding OpenCommand}" MouseAction="LeftDoubleClick" />
+            </DataGrid.InputBindings>
+        </DataGrid>
 
         <Button
             Grid.Row="3"

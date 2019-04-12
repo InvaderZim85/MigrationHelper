@@ -125,6 +125,7 @@
     <Compile Include="DataObjects\ErrorEntry.cs" />
     <Compile Include="DataObjects\ReferenceEntry.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="Ui\FileSizeConverter.cs" />
     <Compile Include="Ui\MenuItemType.cs" />
     <Compile Include="Ui\ViewModel\FileListControlViewModel.cs" />
     <Compile Include="Ui\ViewModel\InfoControlViewModel.cs" />

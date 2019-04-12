@@ -53,7 +53,7 @@ namespace MigrationHelper
         /// <exception cref="ArgumentException">Will be thrown if the project file wasn't set</exception>
         /// <exception cref="FileNotFoundException">Will be thrown if the project file doesn't exit</exception>
         /// <exception cref="DirectoryNotFoundException">Will be thrown when the directory of the project file cannot be determined</exception>
-        public static (bool successful, FileInfo file) CreateMigrationFile(string filename, string content, bool existingFile)
+        public static (bool successful, FileInfo file) SaveMigrationFile(string filename, string content, bool existingFile)
         {
             // Step 0: Check the given parameters and the project file
             if (string.IsNullOrEmpty(filename))
@@ -138,7 +138,7 @@ namespace MigrationHelper
         /// <summary>
         /// Loads the script files
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The list with the files</returns>
         public static List<FileInfo> LoadScriptFiles()
         {
             var projectFiles = LoadProjectFiles();
@@ -160,7 +160,7 @@ namespace MigrationHelper
         /// <summary>
         /// Loads the files of the project
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Loads the files which are in the project</returns>
         private static List<string> LoadProjectFiles()
         {
             if (string.IsNullOrEmpty(Properties.Settings.Default.ProjectFile))

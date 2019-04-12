@@ -32,9 +32,17 @@ namespace MigrationHelper.Ui.View
             SqlEditor.Options.HighlightCurrentLine = true;
             SqlEditor.SyntaxHighlighting = Helper.LoadSqlSchema();
             if (DataContext is MigrationControlViewModel viewModel)
-                viewModel.InitViewModel(DialogCoordinator.Instance, (SetSqlText, GetSqlText));
+                viewModel.InitViewModel(DialogCoordinator.Instance, (SetSqlText, GetSqlText), UpdateFileList);
 
             FileList.InitControl();
+        }
+
+        /// <summary>
+        /// Updates the file list
+        /// </summary>
+        private void UpdateFileList()
+        {
+            FileList.Reload();
         }
 
         /// <summary>
