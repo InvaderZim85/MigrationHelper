@@ -45,7 +45,7 @@ namespace MigrationHelper.Ui.View
         public void Reload()
         {
             if (DataContext is FileListControlViewModel viewModel)
-                viewModel.InitViewModel(SelectionChangedNotifier);
+                viewModel.LoadFiles();
         }
 
         /// <summary>

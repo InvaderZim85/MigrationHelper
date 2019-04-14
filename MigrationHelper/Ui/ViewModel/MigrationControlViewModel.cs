@@ -63,6 +63,8 @@ namespace MigrationHelper.Ui.ViewModel
                 SetField(ref _scriptDir, value);
                 Properties.Settings.Default.ScriptDirectory = value;
                 Properties.Settings.Default.Save();
+
+                _updateList();
             }
         }
 
@@ -215,6 +217,8 @@ namespace MigrationHelper.Ui.ViewModel
                 ProjectFile = dialog.FileName;
                 Properties.Settings.Default.ProjectFile = dialog.FileName;
                 Properties.Settings.Default.Save();
+
+                _updateList();
             }
         }
 

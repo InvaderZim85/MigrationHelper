@@ -79,6 +79,9 @@ namespace MigrationHelper.Ui.ViewModel
         /// </summary>
         public void LoadFiles()
         {
+            if (string.IsNullOrEmpty(Properties.Settings.Default.ProjectFile))
+                return;
+
             _originList = Helper.LoadScriptFiles();
 
             FilterList();

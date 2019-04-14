@@ -9,6 +9,7 @@
     - [Usage](#usage)
         - [First use](#first-use)
         - [Create migration script](#create-migration-script)
+        - [Edit migration script](#edit-migration-script)
     - [Analyze errors](#analyze-errors)
 
 <!-- /TOC -->
@@ -42,6 +43,11 @@ Now you have the following three options:
 2. **Create without check**: Creates the migration script without a check for errors.
 3. **Create with check**: Checks the script for errors. If the script doesn't contain any errors, the migration script will be create.
 4. **Clear**: Clears the filename and the editor.
+
+### Edit migration script
+![Edit](Images/002.png)
+
+If you want to edit an existing migration script you can select it from the right. All migration scripts which are stored in the given directory (*Script dir*) will be shown on the right.
 
 ## Analyze errors
 If your script contains errors they will be shown under the editor:
