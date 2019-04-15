@@ -301,10 +301,6 @@ namespace MigrationHelper.Ui.ViewModel
             if (string.IsNullOrEmpty(sql))
                 return;
 
-            var controller = await _dialogCoordinator.ShowProgressAsync(this, "Please wait",
-                "Please wait while checking the script...");
-            controller.SetIndeterminate();
-
             try
             {
                 var sqlValid = await CheckSqlScript();
@@ -323,10 +319,6 @@ namespace MigrationHelper.Ui.ViewModel
             catch (Exception ex)
             {
                 await _dialogCoordinator.ShowMessageAsync(this, "Error", $"An error has occured: {ex.Message}");
-            }
-            finally
-            {
-                await controller.CloseAsync();
             }
         }
 
