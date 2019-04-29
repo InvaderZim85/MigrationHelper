@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Shapes;
 using MahApps.Metro.Controls.Dialogs;
-using Microsoft.Build.Evaluation;
 using MigrationHelper.Ui.View;
 using ZimLabs.Utility;
 using ZimLabs.WpfBase;
-using Path = System.IO.Path;
 
 namespace MigrationHelper.Ui.ViewModel
 {
