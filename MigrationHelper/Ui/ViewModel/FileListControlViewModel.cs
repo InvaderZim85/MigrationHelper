@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Windows.Input;
+using MahApps.Metro.Controls.Dialogs;
+using MigrationHelper.DataObjects;
 using ZimLabs.Utility.Extensions;
 using ZimLabs.WpfBase;
 
@@ -12,24 +13,29 @@ namespace MigrationHelper.Ui.ViewModel
     public class FileListControlViewModel : ObservableObject
     {
         /// <summary>
+        /// Contains the mah apps dialog coordinator
+        /// </summary>
+        private IDialogCoordinator _dialogCoordinator;
+
+        /// <summary>
         /// Contains the action to set the selected file
         /// </summary>
-        private Action<FileInfo> _setSelectedFile;
+        private Action<FileItem> _setSelectedFile;
 
         /// <summary>
         /// Contains the original list
         /// </summary>
-        private List<FileInfo> _originList;
+        private List<FileItem> _originList;
 
         /// <summary>
         /// Backing field for <see cref="FileList"/>
         /// </summary>
-        private ObservableCollection<FileInfo> _fileList;
+        private ObservableCollection<FileItem> _fileList;
 
         /// <summary>
         /// Gets or sets the list with the available files
         /// </summary>
-        public ObservableCollection<FileInfo> FileList
+        public ObservableCollection<FileItem> FileList
         {
             get => _fileList;
             set => SetField(ref _fileList, value);
@@ -38,15 +44,19 @@ namespace MigrationHelper.Ui.ViewModel
         /// <summary>
         /// Backing field for <see cref="SelectedFile"/>
         /// </summary>
-        private FileInfo _selectedFile;
+        private FileItem _selectedFile;
 
         /// <summary>
         /// Gets or sets the selected file
         /// </summary>
-        public FileInfo SelectedFile
+        public FileItem SelectedFile
         {
             get => _selectedFile;
-            set => SetField(ref _selectedFile, value);
+            set
+            {
+                SetField(ref _selectedFile, value);
+                DeleteButtonEnabled = value != null;
+            }
         }
 
         /// <summary>
@@ -64,11 +74,28 @@ namespace MigrationHelper.Ui.ViewModel
         }
 
         /// <summary>
+        /// Backing field for <see cref="DeleteButtonEnabled"/>
+        /// </summary>
+        private bool _deleteButtonEnabled;
+
+        /// <summary>
+        /// Gets or sets the value which indicates if the delete button is enabled
+        /// </summary>
+        public bool DeleteButtonEnabled
+        {
+            get => _deleteButtonEnabled;
+            set => SetField(ref _deleteButtonEnabled, value);
+        }
+
+        /// <summary>
         /// Init the view model
         /// </summary>
+        /// <param name="dialogCoordinator">The mah apps dialog coordinator</param>
         /// <param name="setSelectedFile">The action to set the selected file</param>
-        public void InitViewModel(Action<FileInfo> setSelectedFile)
+        public void InitViewModel(IDialogCoordinator dialogCoordinator, Action<FileItem> setSelectedFile)
         {
+            _dialogCoordinator = dialogCoordinator;
+
             _setSelectedFile = setSelectedFile;
 
             LoadFiles();
@@ -102,13 +129,62 @@ namespace MigrationHelper.Ui.ViewModel
         });
 
         /// <summary>
+        /// The command to delete the selected entry
+        /// </summary>
+        public ICommand DeleteCommand => new DelegateCommand(DeleteEntry);
+
+        /// <summary>
         /// Filters the list
         /// </summary>
         private void FilterList()
         {
-            FileList = new ObservableCollection<FileInfo>(string.IsNullOrEmpty(Filter)
-                ? _originList.OrderBy(o => o.CreationTime)
-                : _originList.Where(w => w.Name.ContainsIgnoreCase(Filter)).OrderBy(o => o.CreationTime));
+            FileList = new ObservableCollection<FileItem>(string.IsNullOrEmpty(Filter)
+                ? _originList.OrderBy(o => o.File.CreationTime)
+                : _originList.Where(w => w.Name.ContainsIgnoreCase(Filter)).OrderBy(o => o.File.CreationTime));
+        }
+
+        /// <summary>
+        /// Deletes the selected entry
+        /// </summary>
+        private async void DeleteEntry()
+        {
+            if (SelectedFile == null)
+                return;
+
+            if (await _dialogCoordinator.ShowMessageAsync(this, "Delete",
+                    $"Do you really want to delete the migration file \"{SelectedFile.Name}\"") ==
+                MessageDialogResult.Negative)
+                return;
+
+            try
+            {
+                Helper.DeleteProjectItem(SelectedFile);
+
+                SelectedFile = null;
+
+                LoadFiles();
+
+                _setSelectedFile(null);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(nameof(DeleteEntry), ex);
+                await _dialogCoordinator.ShowMessageAsync(this, "Error",
+                    $"An error has occured.\r\n\r\nMessage: {ex.Message}");
+            }
+            
+        }
+
+        /// <summary>
+        /// Sets the selected file
+        /// </summary>
+        /// <param name="filename">The name of the file</param>
+        public FileItem SetSelectedFile(string filename)
+        {
+            var item = FileList.FirstOrDefault(f => f.Name.EqualsIgnoreCase(filename));
+
+            SelectedFile = item;
+            return item;
         }
     }
 }

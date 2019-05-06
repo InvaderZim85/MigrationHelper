@@ -53,7 +53,7 @@ namespace MigrationHelper
         /// <exception cref="ArgumentException">Will be thrown if the project file wasn't set</exception>
         /// <exception cref="FileNotFoundException">Will be thrown if the project file doesn't exit</exception>
         /// <exception cref="DirectoryNotFoundException">Will be thrown when the directory of the project file cannot be determined</exception>
-        public static (bool successful, FileInfo file) SaveMigrationFile(string filename, string content, bool existingFile)
+        public static (bool successful, string filename) SaveMigrationFile(string filename, string content, bool existingFile)
         {
             // Step 0: Check the given parameters and the project file
             if (string.IsNullOrEmpty(filename))
@@ -86,14 +86,14 @@ namespace MigrationHelper
             File.WriteAllText(destinationPath, content);
 
             // Add the file to the project when it doesn't exist
-            if (!existingFile)
-            {
-                LoadProject();
-                _project.AddItem("EmbeddedResource", resourcePath);
-                _project.Save();
-            }
+            if (existingFile)
+                return (true, scriptName);
 
-            return (true, new FileInfo(destinationPath));
+            LoadProject();
+            _project.AddItem("EmbeddedResource", resourcePath);
+            _project.Save();
+
+            return (true, scriptName);
         }
 
         /// <summary>
@@ -104,7 +104,13 @@ namespace MigrationHelper
         private static string CreateFilename(string filename)
         {
             var checkPattern = new Regex(@"^\d{12,}");
-            return checkPattern.IsMatch(filename) ? filename : $"{DateTime.Now:yyMMddHHmmss}_{filename}.sql";
+
+            if (filename.ContainsIgnoreCase(".sql"))
+            {
+                filename = Regex.Replace(filename, ".sql", "", RegexOptions.IgnoreCase);
+            }
+
+            return checkPattern.IsMatch(filename) ? $"{filename}.sql" : $"{DateTime.Now:yyMMddHHmmss}_{filename}.sql";
         }
 
         /// <summary>
@@ -139,7 +145,7 @@ namespace MigrationHelper
         /// Loads the script files
         /// </summary>
         /// <returns>The list with the files</returns>
-        public static List<FileInfo> LoadScriptFiles()
+        public static List<FileItem> LoadScriptFiles()
         {
             var projectFiles = LoadProjectFiles();
 
@@ -154,24 +160,55 @@ namespace MigrationHelper
             var dirInfo = new DirectoryInfo(fileDir);
             var files = dirInfo.GetFiles("*.sql", SearchOption.AllDirectories);
 
-            return files.Where(w => projectFiles.Any(a => a.EqualsIgnoreCase(w.Name))).ToList();
+            var resultList = new List<FileItem>();
+
+            foreach (var file in files)
+            {
+                var entry = projectFiles.FirstOrDefault(f => f.filename.EqualsIgnoreCase(file.Name)).projectItem;
+
+                if (entry == null)
+                    continue;
+
+                resultList.Add(new FileItem(file, entry));
+            }
+
+            return resultList;
         }
 
         /// <summary>
         /// Loads the files of the project
         /// </summary>
         /// <returns>Loads the files which are in the project</returns>
-        private static List<string> LoadProjectFiles()
+        private static List<(ProjectItem projectItem, string filename)> LoadProjectFiles()
         {
             if (string.IsNullOrEmpty(Properties.Settings.Default.ProjectFile))
                 throw new ArgumentException("The path of the project file is missing.");
 
             LoadProject();
 
-            var items = _project.Items.Where(w => w.ItemType.Equals("EmbeddedResource"))
-                .Select(s => s.EvaluatedInclude).ToList();
+            return _project.Items.Where(w => w.ItemType.Equals("EmbeddedResource"))
+                .Select(s => (s, Path.GetFileName(s.EvaluatedInclude))).ToList();
 
-            return items.Select(Path.GetFileName).ToList();
+            //return items.Select(Path.GetFileName).ToList();
+        }
+
+        /// <summary>
+        /// Deletes the given project item
+        /// </summary>
+        /// <param name="file">The selected file</param>
+        public static void DeleteProjectItem(FileItem file)
+        {
+            if (file?.Item == null)
+                return;
+
+            LoadProject();
+
+            // Remove the file from the project
+            _project.RemoveItem(file.Item);
+            _project.Save();
+
+            // Delete the file on the system
+            File.Delete(file.File.FullName);
         }
 
         /// <summary>
@@ -207,6 +244,37 @@ namespace MigrationHelper
         {
             if (_project == null)
                 _project = new Project(Properties.Settings.Default.ProjectFile);
+        }
+
+        /// <summary>
+        /// Updates the project
+        /// </summary>
+        public static void UpdateProject()
+        {
+            _project = null;
+            LoadProject();
+        }
+
+        /// <summary>
+        /// Converts the file length into a readable size
+        /// </summary>
+        /// <param name="length">The file length</param>
+        /// <returns>The readable size</returns>
+        public static string ToFormattedFileSize(this long length)
+        {
+            switch (length)
+            {
+                case var _ when length < 1024:
+                    return "1 KB";
+                case var _ when length >= 1024 && length < Math.Pow(1024, 2):
+                    return $"{length / 1024d:N2} KB";
+                case var _ when length >= Math.Pow(1024, 2) && length < Math.Pow(1024, 3):
+                    return $"{length / Math.Pow(1024, 2):N2} MB";
+                case var _ when length >= Math.Pow(1024, 3):
+                    return $"{length / Math.Pow(1024, 2):N2} GB";
+            }
+
+            return "";
         }
     }
 }

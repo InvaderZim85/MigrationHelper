@@ -1,0 +1,6 @@
+ToDo-Liste Migration Helper
+===========================
+
+- Wenn neue Datei erstellt wurde, Liste mit allen Dateien einmalig laden und daraus die neu erstellte raussuchen (MigrationControl)
+- Button um eine neue Datei zu erstellen. Feld für den Filename dann readonly machen
+    - Button New > Dialog wo Nutzer den Dateinamen eingeben kann öffnen?

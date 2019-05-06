@@ -132,6 +132,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataObjects\ErrorEntry.cs" />
+    <Compile Include="DataObjects\FileItem.cs" />
     <Compile Include="DataObjects\ReferenceEntry.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Logger.cs" />

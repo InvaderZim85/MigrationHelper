@@ -74,9 +74,7 @@
             <TextBox
                 Grid.Row="1"
                 Grid.Column="1"
-                Width="400"
                 Margin="3"
-                HorizontalAlignment="Left"
                 Text="{Binding ScriptDir}" />
 
             <Separator
@@ -93,9 +91,7 @@
             <TextBox
                 Grid.Row="4"
                 Grid.Column="1"
-                Width="400"
                 Margin="3"
-                HorizontalAlignment="Left"
                 mah:TextBoxHelper.Watermark="Filename"
                 Text="{Binding Filename, UpdateSourceTrigger=PropertyChanged}" />
 
@@ -185,8 +181,8 @@
                 <Button
                     Width="50"
                     Margin="3"
-                    Command="{Binding ClearCommand}"
-                    Content="Clear" />
+                    Command="{Binding NewCommand}"
+                    Content="New" />
                 <Button
                     Width="50"
                     Margin="3"

@@ -32,7 +32,7 @@ namespace MigrationHelper.Ui.View
             SqlEditor.Options.HighlightCurrentLine = true;
             SqlEditor.SyntaxHighlighting = Helper.LoadSqlSchema();
             if (DataContext is MigrationControlViewModel viewModel)
-                viewModel.InitViewModel(DialogCoordinator.Instance, (SetSqlText, GetSqlText), UpdateFileList);
+                viewModel.InitViewModel(DialogCoordinator.Instance, (SetSqlText, GetSqlText), UpdateFileList, SetSelectedFile);
 
             FileList.InitControl();
         }
@@ -64,6 +64,15 @@ namespace MigrationHelper.Ui.View
         }
 
         /// <summary>
+        /// Sets the selected file
+        /// </summary>
+        /// <param name="filename">The name of the file</param>
+        private void SetSelectedFile(string filename)
+        {
+            FileList.SetSelectedFile(filename);
+        }
+
+        /// <summary>
         /// Occurs when the user performs a double click on the error entry
         /// </summary>
         /// <param name="entry">The selected entry</param>
@@ -79,10 +88,15 @@ namespace MigrationHelper.Ui.View
         /// Occurs when the user selects a file in the file list
         /// </summary>
         /// <param name="file">The selected file</param>
-        private void FileList_OnSelectionChanged(FileInfo file)
+        private void FileList_OnSelectionChanged(FileItem file)
         {
             if (DataContext is MigrationControlViewModel viewModel)
-                viewModel.OpenSelectedFile(file);
+            {
+                if (file == null)
+                    viewModel.ClearInput();
+                else
+                    viewModel.OpenSelectedFile(file);
+            }
         }
     }
 }

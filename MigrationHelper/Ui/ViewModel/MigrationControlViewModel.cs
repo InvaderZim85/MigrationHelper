@@ -30,14 +30,19 @@ namespace MigrationHelper.Ui.ViewModel
         private Action _updateList;
 
         /// <summary>
-        /// Contains the selected sql file
+        /// Contains the action to set the selected file in the file list
         /// </summary>
-        private FileInfo _sqlFile;
+        private Action<string> _setSelectedFile;
 
         /// <summary>
         /// Backing field for <see cref="ProjectFile"/>
         /// </summary>
         private string _projectFile;
+
+        /// <summary>
+        /// Contains the value which indicates if an existing file was opened
+        /// </summary>
+        private bool _existingFile;
 
         /// <summary>
         /// Gets or sets the path of the project file
@@ -164,12 +169,14 @@ namespace MigrationHelper.Ui.ViewModel
         /// <param name="dialogCoordinator">The mah apps dialog coordinator</param>
         /// <param name="textGetSet">The function to get / set the sql text</param>
         /// <param name="updateList">The action to update the file list</param>
+        /// <param name="setSelectedFile">The action to set the selected file in the file list</param>
         public void InitViewModel(IDialogCoordinator dialogCoordinator,
-            (Action<string> setText, Func<string> getText) textGetSet, Action updateList)
+            (Action<string> setText, Func<string> getText) textGetSet, Action updateList, Action<string> setSelectedFile)
         {
             _dialogCoordinator = dialogCoordinator;
             _textGetSet = textGetSet;
             _updateList = updateList;
+            _setSelectedFile = setSelectedFile;
 
             ProjectFile = Properties.Settings.Default.ProjectFile;
             ScriptDir = Properties.Settings.Default.ScriptDirectory;
@@ -179,11 +186,6 @@ namespace MigrationHelper.Ui.ViewModel
         /// The command to open the desired project file
         /// </summary>
         public ICommand OpenProjectFileCommand => new DelegateCommand(OpenProjectFile);
-
-        /// <summary>
-        /// The command to clear the input
-        /// </summary>
-        public ICommand ClearCommand => new DelegateCommand(Clear);
 
         /// <summary>
         /// The command to load an existing file
@@ -199,6 +201,11 @@ namespace MigrationHelper.Ui.ViewModel
         /// The command to save the script
         /// </summary>
         public ICommand SaveCommand => new DelegateCommand(SaveScript);
+
+        /// <summary>
+        /// The command to create a new migration script
+        /// </summary>
+        public ICommand NewCommand => new DelegateCommand(ClearInput);
 
         /// <summary>
         /// Opens the project file
@@ -219,14 +226,16 @@ namespace MigrationHelper.Ui.ViewModel
                 Properties.Settings.Default.ProjectFile = dialog.FileName;
                 Properties.Settings.Default.Save();
 
+                Helper.UpdateProject();
+
                 _updateList();
             }
         }
 
         /// <summary>
-        /// Clears the input
+        /// Clears the input for a new entry
         /// </summary>
-        private void Clear()
+        public void ClearInput()
         {
             Filename = "";
             _textGetSet.Set("");
@@ -235,8 +244,6 @@ namespace MigrationHelper.Ui.ViewModel
 
             ShowErrorIcon = Visibility.Hidden;
             ShowValidIcon = Visibility.Hidden;
-
-            _sqlFile = null;
         }
 
         /// <summary>
@@ -339,15 +346,19 @@ namespace MigrationHelper.Ui.ViewModel
 
             try
             {
-                var (successful, file) = await Task.Run(() => Helper.SaveMigrationFile(Filename, sql, _sqlFile != null));
+                var (successful, filename) = await Task.Run(() => Helper.SaveMigrationFile(Filename, sql, _existingFile));
 
                 if (successful)
                 {
-                    _sqlFile = file;
+                    Filename = filename;
+                    
+                    _existingFile = true;
                     _updateList();
+                    _setSelectedFile(filename);
+
                     await _dialogCoordinator.ShowMessageAsync(this, "File",
-                        $"Migration file created / updated. Filename: {file.Name}");
-                    Logger.Info($"Migration file created / updated. Filename: {file.Name}");
+                        $"Migration file created / updated. Filename: {filename}");
+                    Logger.Info($"Migration file created / updated. Filename: {filename}");
                 }
                 else
                     await _dialogCoordinator.ShowMessageAsync(this, "Error",
@@ -399,13 +410,13 @@ namespace MigrationHelper.Ui.ViewModel
         /// Opens an existing file
         /// </summary>
         /// <param name="file">The file</param>
-        public void OpenSelectedFile(FileInfo file)
+        public void OpenSelectedFile(FileItem file)
         {
-            _sqlFile = file;
+            _existingFile = true;
 
-            Filename = file.Name.Replace(file.Extension, "");
+            Filename = file.Name.Replace(file.File.Extension, "");
 
-            SetSqlText(file.FullName);
+            SetSqlText(file.File.FullName);
         }
 
         /// <summary>
