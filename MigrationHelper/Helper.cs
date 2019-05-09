@@ -90,9 +90,17 @@ namespace MigrationHelper
                 return (true, scriptName);
 
             LoadProject();
-            _project.AddItem("EmbeddedResource", resourcePath);
-            _project.Save();
 
+            var itemList = _project.AddItem("EmbeddedResource", resourcePath);
+            // Check if the file was created in the project
+            if (!itemList.Any(a => a.EvaluatedInclude.EqualsIgnoreCase(resourcePath)))
+            {
+                // Remove the file from the system because it wasn't created correctly
+                File.Delete(destinationPath);
+                return (false, "");
+            }
+
+            _project.Save();
             return (true, scriptName);
         }
 
@@ -194,19 +202,25 @@ namespace MigrationHelper
         /// Deletes the given project item
         /// </summary>
         /// <param name="file">The selected file</param>
-        public static void DeleteProjectItem(FileItem file)
+        public static bool DeleteProjectItem(FileItem file)
         {
             if (file?.Item == null)
-                return;
+                return false;
 
             LoadProject();
 
             // Remove the file from the project
-            _project.RemoveItem(file.Item);
-            _project.Save();
+            if (_project.RemoveItem(file.Item))
+            {
+                _project.Save();
 
-            // Delete the file on the system
-            File.Delete(file.File.FullName);
+                // Delete the file on the system
+                File.Delete(file.File.FullName);
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
