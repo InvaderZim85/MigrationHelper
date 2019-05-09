@@ -64,7 +64,8 @@
                 Width="30"
                 Margin="3"
                 Command="{Binding OpenProjectFileCommand}"
-                Content="..." />
+                Content="..."
+                ToolTip="Open the project file of the migration project (*.csproj)" />
 
             <Label
                 Grid.Row="1"
@@ -114,7 +115,8 @@
                 Margin="3"
                 HorizontalAlignment="Right"
                 Command="{Binding CheckCommand}"
-                Content="Check SQL" />
+                Content="Check SQL"
+                ToolTip="Checks the inserted SQL script" />
             <iconPacks:PackIconMaterial
                 Grid.Row="6"
                 Grid.Column="1"
@@ -170,7 +172,8 @@
                 Margin="3"
                 HorizontalAlignment="Left"
                 Command="{Binding OpenExistingFileCommand}"
-                Content="Open existing file" />
+                Content="Open existing file"
+                ToolTip="Open an existing sql file" />
 
             <StackPanel
                 Grid.Row="10"
@@ -182,13 +185,15 @@
                     Width="50"
                     Margin="3"
                     Command="{Binding NewCommand}"
-                    Content="New" />
+                    Content="New"
+                    ToolTip="Resets the input to create a new migration file" />
                 <Button
                     Width="50"
                     Margin="3"
                     Command="{Binding SaveCommand}"
                     Content="Save"
-                    IsEnabled="{Binding CreateButtonEnabled}" />
+                    IsEnabled="{Binding CreateButtonEnabled}"
+                    ToolTip="Saves the current migration file" />
             </StackPanel>
         </Grid>
 

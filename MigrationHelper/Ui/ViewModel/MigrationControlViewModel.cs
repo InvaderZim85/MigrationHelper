@@ -228,6 +228,8 @@ namespace MigrationHelper.Ui.ViewModel
 
                 Helper.UpdateProject();
 
+                ScriptDir = Helper.GetScriptFolder(dialog.FileName);
+
                 _updateList();
             }
         }

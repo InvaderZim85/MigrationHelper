@@ -188,8 +188,6 @@ namespace MigrationHelper
 
             return _project.Items.Where(w => w.ItemType.Equals("EmbeddedResource"))
                 .Select(s => (s, Path.GetFileName(s.EvaluatedInclude))).ToList();
-
-            //return items.Select(Path.GetFileName).ToList();
         }
 
         /// <summary>
@@ -240,10 +238,20 @@ namespace MigrationHelper
         /// <summary>
         /// Loads the project if necessary
         /// </summary>
-        private static void LoadProject()
+        /// <param name="forceLoad">true to force the creation of a new instance</param>
+        private static void LoadProject(bool forceLoad = false)
         {
-            if (_project == null)
+            if (_project == null || forceLoad)
                 _project = new Project(Properties.Settings.Default.ProjectFile);
+        }
+
+        /// <summary>
+        /// Unloads the project
+        /// </summary>
+        public static void UnloadProject()
+        {
+            if (_project != null)
+                ProjectCollection.GlobalProjectCollection.UnloadProject(_project);
         }
 
         /// <summary>
@@ -251,8 +259,8 @@ namespace MigrationHelper
         /// </summary>
         public static void UpdateProject()
         {
-            _project = null;
-            LoadProject();
+            UnloadProject();
+            LoadProject(true);
         }
 
         /// <summary>
@@ -275,6 +283,31 @@ namespace MigrationHelper
             }
 
             return "";
+        }
+
+        /// <summary>
+        /// Returns the name of the script directory if its exists
+        /// </summary>
+        /// <param name="projectFile">The path of the project file</param>
+        /// <returns>The name of the scrip directory</returns>
+        public static string GetScriptFolder(string projectFile)
+        {
+            if (string.IsNullOrEmpty(projectFile))
+                return "";
+
+            if (!File.Exists(projectFile))
+                return "";
+
+            var dir = Path.GetDirectoryName(projectFile);
+
+            if (string.IsNullOrEmpty(dir))
+                return "";
+
+            var subDirs = Directory.GetDirectories(dir);
+
+            var scriptDir = subDirs.FirstOrDefault(f => f.ContainsIgnoreCase("scripts"));
+
+            return string.IsNullOrEmpty(scriptDir) ? "" : scriptDir.Split(new[] {"\\"}, StringSplitOptions.None).Last();
         }
     }
 }
