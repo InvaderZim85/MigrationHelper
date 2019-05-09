@@ -124,7 +124,7 @@ namespace MigrationHelper.Ui.ViewModel
             catch (Exception ex)
             {
                 await _dialogCoordinator.ShowMessageAsync(this, "Error",
-                    $"An error has occured while loading the reference information.\r\n\r\nMessage: {ex.Message}");
+                    $"An error has occurred while loading the reference information.\r\n\r\nMessage: {ex.Message}");
             }
         }
     }

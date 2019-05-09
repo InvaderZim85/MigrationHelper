@@ -90,9 +90,17 @@ namespace MigrationHelper
                 return (true, scriptName);
 
             LoadProject();
-            _project.AddItem("EmbeddedResource", resourcePath);
-            _project.Save();
 
+            var itemList = _project.AddItem("EmbeddedResource", resourcePath);
+            // Check if the file was created in the project
+            if (!itemList.Any(a => a.EvaluatedInclude.EqualsIgnoreCase(resourcePath)))
+            {
+                // Remove the file from the system because it wasn't created correctly
+                File.Delete(destinationPath);
+                return (false, "");
+            }
+
+            _project.Save();
             return (true, scriptName);
         }
 
@@ -188,27 +196,31 @@ namespace MigrationHelper
 
             return _project.Items.Where(w => w.ItemType.Equals("EmbeddedResource"))
                 .Select(s => (s, Path.GetFileName(s.EvaluatedInclude))).ToList();
-
-            //return items.Select(Path.GetFileName).ToList();
         }
 
         /// <summary>
         /// Deletes the given project item
         /// </summary>
         /// <param name="file">The selected file</param>
-        public static void DeleteProjectItem(FileItem file)
+        public static bool DeleteProjectItem(FileItem file)
         {
             if (file?.Item == null)
-                return;
+                return false;
 
             LoadProject();
 
             // Remove the file from the project
-            _project.RemoveItem(file.Item);
-            _project.Save();
+            if (_project.RemoveItem(file.Item))
+            {
+                _project.Save();
 
-            // Delete the file on the system
-            File.Delete(file.File.FullName);
+                // Delete the file on the system
+                File.Delete(file.File.FullName);
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -240,10 +252,20 @@ namespace MigrationHelper
         /// <summary>
         /// Loads the project if necessary
         /// </summary>
-        private static void LoadProject()
+        /// <param name="forceLoad">true to force the creation of a new instance</param>
+        private static void LoadProject(bool forceLoad = false)
         {
-            if (_project == null)
+            if (_project == null || forceLoad)
                 _project = new Project(Properties.Settings.Default.ProjectFile);
+        }
+
+        /// <summary>
+        /// Unloads the project
+        /// </summary>
+        public static void UnloadProject()
+        {
+            if (_project != null)
+                ProjectCollection.GlobalProjectCollection.UnloadProject(_project);
         }
 
         /// <summary>
@@ -251,8 +273,8 @@ namespace MigrationHelper
         /// </summary>
         public static void UpdateProject()
         {
-            _project = null;
-            LoadProject();
+            UnloadProject();
+            LoadProject(true);
         }
 
         /// <summary>
@@ -275,6 +297,31 @@ namespace MigrationHelper
             }
 
             return "";
+        }
+
+        /// <summary>
+        /// Returns the name of the script directory if its exists
+        /// </summary>
+        /// <param name="projectFile">The path of the project file</param>
+        /// <returns>The name of the scrip directory</returns>
+        public static string GetScriptFolder(string projectFile)
+        {
+            if (string.IsNullOrEmpty(projectFile))
+                return "";
+
+            if (!File.Exists(projectFile))
+                return "";
+
+            var dir = Path.GetDirectoryName(projectFile);
+
+            if (string.IsNullOrEmpty(dir))
+                return "";
+
+            var subDirs = Directory.GetDirectories(dir);
+
+            var scriptDir = subDirs.FirstOrDefault(f => f.ContainsIgnoreCase("scripts"));
+
+            return string.IsNullOrEmpty(scriptDir) ? "" : scriptDir.Split(new[] {"\\"}, StringSplitOptions.None).Last();
         }
     }
 }

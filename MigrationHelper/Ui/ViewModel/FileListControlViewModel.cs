@@ -158,7 +158,12 @@ namespace MigrationHelper.Ui.ViewModel
 
             try
             {
-                Helper.DeleteProjectItem(SelectedFile);
+                if (!Helper.DeleteProjectItem(SelectedFile))
+                {
+                    await _dialogCoordinator.ShowMessageAsync(this, "Error",
+                        "An error has occurred while deleting the file.");
+                    return;
+                }
 
                 SelectedFile = null;
 
@@ -170,7 +175,7 @@ namespace MigrationHelper.Ui.ViewModel
             {
                 Logger.Error(nameof(DeleteEntry), ex);
                 await _dialogCoordinator.ShowMessageAsync(this, "Error",
-                    $"An error has occured.\r\n\r\nMessage: {ex.Message}");
+                    $"An error has occurred.\r\n\r\nMessage: {ex.Message}");
             }
             
         }

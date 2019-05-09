@@ -228,6 +228,8 @@ namespace MigrationHelper.Ui.ViewModel
 
                 Helper.UpdateProject();
 
+                ScriptDir = Helper.GetScriptFolder(dialog.FileName);
+
                 _updateList();
             }
         }
@@ -262,8 +264,8 @@ namespace MigrationHelper.Ui.ViewModel
 
             try
             {
-                var result = await Helper.IsSqlValid(sql);
-                if (result.valid)
+                var (valid, errors) = await Helper.IsSqlValid(sql);
+                if (valid)
                 {
                     ShowErrorControl = false;
                     ShowErrorIcon = Visibility.Hidden;
@@ -276,14 +278,14 @@ namespace MigrationHelper.Ui.ViewModel
                     ShowErrorControl = true;
                     ShowErrorIcon = Visibility.Visible;
                     ShowValidIcon = Visibility.Hidden;
-                    ErrorList = new ObservableCollection<ErrorEntry>(result.errors);
+                    ErrorList = new ObservableCollection<ErrorEntry>(errors);
                     return false;
                 }
             }
             catch (Exception ex)
             {
                 Logger.Error(nameof(CheckSqlScript), ex);
-                await _dialogCoordinator.ShowMessageAsync(this, "Error", $"An error has occured: {ex.Message}");
+                await _dialogCoordinator.ShowMessageAsync(this, "Error", $"An error has occurred: {ex.Message}");
                 return false;
             }
             finally
@@ -331,7 +333,7 @@ namespace MigrationHelper.Ui.ViewModel
             catch (Exception ex)
             {
                 Logger.Error(nameof(SaveScript), ex);
-                await _dialogCoordinator.ShowMessageAsync(this, "Error", $"An error has occured: {ex.Message}");
+                await _dialogCoordinator.ShowMessageAsync(this, "Error", $"An error has occurred: {ex.Message}");
             }
         }
 
@@ -362,13 +364,13 @@ namespace MigrationHelper.Ui.ViewModel
                 }
                 else
                     await _dialogCoordinator.ShowMessageAsync(this, "Error",
-                        "An error has occured while creating the migration file.");
+                        "An error has occurred while creating the migration file.");
             }
             catch (Exception ex)
             {
                 Logger.Error(nameof(SaveMigrationFile), ex);
                 await _dialogCoordinator.ShowMessageAsync(this, "Error",
-                    $"An error has occured.\r\n\r\nMessage: {ex.Message}");
+                    $"An error has occurred.\r\n\r\nMessage: {ex.Message}");
             }
             finally
             {
@@ -402,7 +404,9 @@ namespace MigrationHelper.Ui.ViewModel
             catch (Exception ex)
             {
                 Logger.Error(nameof(OpenExistingFile), ex);
-                await _dialogCoordinator.ShowMessageAsync(this, "Error", $"An error has occured while loading the content of the selected file.\r\n\r\nMessage: {ex.Message}"); 
+                await _dialogCoordinator.ShowMessageAsync(this, "Error",
+                    "An error has occurred while loading the content of the selected file." +
+                    $"\r\n\r\nMessage: {ex.Message}");
             }
         }
 

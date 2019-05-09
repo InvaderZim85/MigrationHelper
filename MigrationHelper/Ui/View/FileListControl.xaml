@@ -29,7 +29,7 @@
         <TextBox
             Grid.Row="0"
             Margin="3"
-            mah:TextBoxHelper.Watermark="Filter..."
+            mah:TextBoxHelper.Watermark="Filter (hit enter to execute the filter)"
             Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}">
             <TextBox.InputBindings>
                 <KeyBinding Key="Enter" Command="{Binding FilterCommand}" />
@@ -47,9 +47,13 @@
             SelectedItem="{Binding SelectedFile}">
             <DataGrid.Columns>
                 <DataGridTextColumn
-                    Width="*"
+                    Width="2*"
                     Binding="{Binding Name}"
                     Header="File" />
+                <DataGridTextColumn
+                    Width="*"
+                    Binding="{Binding File.CreationTime, ConverterCulture=de-de, StringFormat=G}"
+                    Header="Date modified" />
                 <DataGridTextColumn
                     Width="Auto"
                     Binding="{Binding Size}"
@@ -67,7 +71,8 @@
             HorizontalAlignment="Left"
             Command="{Binding DeleteCommand}"
             Content="Delete"
-            IsEnabled="{Binding DeleteButtonEnabled}" />
+            IsEnabled="{Binding DeleteButtonEnabled}"
+            ToolTip="Deletes the selected file" />
 
         <Button
             Grid.Row="3"
@@ -75,6 +80,7 @@
             Margin="3"
             HorizontalAlignment="Right"
             Command="{Binding OpenCommand}"
-            Content="Open" />
+            Content="Open"
+            ToolTip="Opens the selected file" />
     </Grid>
 </UserControl>
