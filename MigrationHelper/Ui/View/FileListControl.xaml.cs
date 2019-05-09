@@ -56,7 +56,7 @@ namespace MigrationHelper.Ui.View
         /// <param name="filename">The name of the file</param>
         public void SetSelectedFile(string filename)
         {
-            if (!(DataContext is FileListControlViewModel viewModel))
+            if (!(DataContext is FileListControlViewModel viewModel) || string.IsNullOrEmpty(filename))
                 return;
 
             var item = viewModel.SetSelectedFile(filename);
