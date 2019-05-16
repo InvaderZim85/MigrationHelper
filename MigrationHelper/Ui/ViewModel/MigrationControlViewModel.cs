@@ -241,6 +241,7 @@ namespace MigrationHelper.Ui.ViewModel
         {
             Filename = "";
             _textGetSet.Set("");
+            _existingFile = false;
             ShowErrorControl = false;
             ErrorList = new ObservableCollection<ErrorEntry>();
 
