@@ -92,6 +92,13 @@ namespace MigrationHelper.Ui.ViewModel
         {
             IUserControl control = null;
 
+            if (type == MenuItemType.Appearance)
+            {
+                var appearanceWindow = new AppearanceWindow();
+                appearanceWindow.ShowDialog();
+                return;
+            }
+
             if (_controlDictionary.ContainsKey(type))
             {
                 control = _controlDictionary[type];
@@ -102,6 +109,9 @@ namespace MigrationHelper.Ui.ViewModel
                 {
                     case MenuItemType.Migration:
                         control = new MigrationControl();
+                        break;
+                    case MenuItemType.MigrationSettings:
+                        control = new MigrationSettingsControl();
                         break;
                     case MenuItemType.Info:
                         control = new InfoControl();

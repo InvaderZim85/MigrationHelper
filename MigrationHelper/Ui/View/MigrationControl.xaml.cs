@@ -1,8 +1,10 @@
 ﻿using System.IO;
 using System.Windows.Controls;
+using System.Windows.Media;
 using MahApps.Metro.Controls.Dialogs;
 using MigrationHelper.DataObjects;
 using MigrationHelper.Ui.ViewModel;
+using ZimLabs.Utility.Extensions;
 
 namespace MigrationHelper.Ui.View
 {
@@ -29,12 +31,30 @@ namespace MigrationHelper.Ui.View
         /// </summary>
         public void InitControl()
         {
-            SqlEditor.Options.HighlightCurrentLine = true;
-            SqlEditor.SyntaxHighlighting = Helper.LoadSqlSchema();
+            SetSqlSchema();
+
+            Mediator.Register("SetSqlSchema", SetSqlSchema);
+
+            // A load is here not needed, because it's triggered by the ScriptDir property which is set in the init method
+            // of the MigrationControlViewModel
+            FileList.InitControl();
+
             if (DataContext is MigrationControlViewModel viewModel)
                 viewModel.InitViewModel(DialogCoordinator.Instance, (SetSqlText, GetSqlText), UpdateFileList, SetSelectedFile);
 
-            FileList.InitControl();
+            
+        }
+
+        /// <summary>
+        /// Sets the sql schema of the editor window
+        /// </summary>
+        private void SetSqlSchema()
+        {
+            var dark = Properties.Settings.Default.Theme.ContainsIgnoreCase("dark");
+
+            SqlEditor.Options.HighlightCurrentLine = true;
+            SqlEditor.SyntaxHighlighting = Helper.LoadSqlSchema(dark);
+            SqlEditor.Foreground = new SolidColorBrush(dark ? Colors.White : Colors.Black);
         }
 
         /// <summary>
@@ -88,7 +108,7 @@ namespace MigrationHelper.Ui.View
         /// Occurs when the user selects a file in the file list
         /// </summary>
         /// <param name="file">The selected file</param>
-        private void FileList_OnSelectionChanged(FileItem file)
+        private void FileList_OnSelectionChanged(TreeViewNode file)
         {
             if (DataContext is MigrationControlViewModel viewModel)
             {

@@ -7,11 +7,10 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="clr-namespace:MigrationHelper.Ui"
-    xmlns:ui1="clr-namespace:MigrationHelper.Ui"
     xmlns:viewModel="clr-namespace:MigrationHelper.Ui.ViewModel"
     Title="{Binding Title}"
-    Width="800"
-    Height="600"
+    Width="1000"
+    Height="800"
     mah:DialogParticipation.Register="{Binding}"
     Loaded="MainWindow_OnLoaded"
     ResizeMode="CanResizeWithGrip"
@@ -25,21 +24,29 @@
             <MenuItem Header="Program">
                 <MenuItem
                     Command="{Binding MenuCommand}"
-                    CommandParameter="{x:Static ui1:MenuItemType.Close}"
+                    CommandParameter="{x:Static ui:MenuItemType.Close}"
                     Header="Close" />
             </MenuItem>
             <MenuItem
                 Command="{Binding MenuCommand}"
-                CommandParameter="{x:Static ui1:MenuItemType.Migration}"
+                CommandParameter="{x:Static ui:MenuItemType.Migration}"
                 Header="Migration" />
+            <MenuItem
+                Command="{Binding MenuCommand}"
+                CommandParameter="{x:Static ui:MenuItemType.MigrationSettings}"
+                Header="Settings" />
             <MenuItem Header="Help">
                 <MenuItem
                     Command="{Binding MenuCommand}"
-                    CommandParameter="{x:Static ui1:MenuItemType.Manual}"
+                    CommandParameter="{x:Static ui:MenuItemType.Appearance}"
+                    Header="Appearance" />
+                <MenuItem
+                    Command="{Binding MenuCommand}"
+                    CommandParameter="{x:Static ui:MenuItemType.Manual}"
                     Header="Manual" />
                 <MenuItem
                     Command="{Binding MenuCommand}"
-                    CommandParameter="{x:Static ui1:MenuItemType.Info}"
+                    CommandParameter="{x:Static ui:MenuItemType.Info}"
                     Header="About" />
             </MenuItem>
 

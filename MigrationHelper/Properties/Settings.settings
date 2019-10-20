@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="CmsMigrationHelper.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MigrationHelper.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="ProjectFile" Type="System.String" Scope="User">
@@ -7,6 +7,24 @@
     </Setting>
     <Setting Name="ScriptDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Theme" Type="System.String" Scope="User">
+      <Value Profile="(Default)">BaseLight</Value>
+    </Setting>
+    <Setting Name="Accent" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Steel</Value>
+    </Setting>
+    <Setting Name="UseSubFolder" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SubScriptDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Scripts_</Value>
+    </Setting>
+    <Setting Name="SubScriptDirectoryFormat" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="ExcludeDirectories" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Init</Value>
     </Setting>
   </Settings>
 </SettingsFile>

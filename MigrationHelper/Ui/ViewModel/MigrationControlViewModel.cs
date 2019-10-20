@@ -7,7 +7,6 @@ using System.Windows.Input;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using MigrationHelper.DataObjects;
-using NLog.Fluent;
 using ZimLabs.WpfBase;
 
 namespace MigrationHelper.Ui.ViewModel
@@ -360,8 +359,8 @@ namespace MigrationHelper.Ui.ViewModel
                     _setSelectedFile(filename);
 
                     await _dialogCoordinator.ShowMessageAsync(this, "File",
-                        $"Migration file created / updated. Filename: {filename}");
-                    Logger.Info($"Migration file created / updated. Filename: {filename}");
+                        $"Migration file created / updated. File: {filename}");
+                    Logger.Info($"Migration file created / updated. File: {filename}");
                 }
                 else
                     await _dialogCoordinator.ShowMessageAsync(this, "Error",
@@ -415,13 +414,13 @@ namespace MigrationHelper.Ui.ViewModel
         /// Opens an existing file
         /// </summary>
         /// <param name="file">The file</param>
-        public void OpenSelectedFile(FileItem file)
+        public void OpenSelectedFile(TreeViewNode file)
         {
             _existingFile = true;
 
-            Filename = file.Name.Replace(file.File.Extension, "");
+            Filename = file.Name.Replace(file.FileExtension, "");
 
-            SetSqlText(file.File.FullName);
+            SetSqlText(file.FullPath);
         }
 
         /// <summary>

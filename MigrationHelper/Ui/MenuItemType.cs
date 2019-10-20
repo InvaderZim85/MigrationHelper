@@ -23,6 +23,16 @@
         /// <summary>
         /// Shows the manual
         /// </summary>
-        Manual
+        Manual,
+
+        /// <summary>
+        /// Shows the appearance window
+        /// </summary>
+        Appearance,
+
+        /// <summary>
+        /// Shows the migration settings
+        /// </summary>
+        MigrationSettings
     }
 }

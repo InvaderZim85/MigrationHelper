@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Security;
 using NLog;
 
 namespace MigrationHelper
@@ -20,8 +18,6 @@ namespace MigrationHelper
             };
 
             WriteLog(log);
-
-            WriteEventLog(LogLevel.Info, message);
         }
 
         /// <summary>
@@ -37,8 +33,6 @@ namespace MigrationHelper
                 Message = message,
                 Exception = ex
             });
-
-            WriteEventLog(LogLevel.Error, message, ex);
         }
 
         /// <summary>
@@ -49,33 +43,6 @@ namespace MigrationHelper
         {
             var logger = LogManager.GetLogger("*");
             logger.Log(log);
-        }
-
-        /// <summary>
-        /// Writes a message to the windows event log
-        /// </summary>
-        /// <param name="level">The log level</param>
-        /// <param name="message">The message</param>
-        /// <param name="ex">The execption (optional)</param>
-        private static void WriteEventLog(LogLevel level, string message, Exception ex = null)
-        {
-            try
-            {
-                using (var log = new EventLog("Application"){Source = nameof(MigrationHelper)})
-                {
-                    log.WriteEntry(message,
-                        level == LogLevel.Error ? EventLogEntryType.Error : EventLogEntryType.Information);
-                }
-            }
-            catch (SecurityException se)
-            {
-                WriteLog(new LogEventInfo
-                {
-                    Level = LogLevel.Error,
-                    Message = nameof(WriteEventLog),
-                    Exception = se
-                });
-            }
         }
     }
 }
