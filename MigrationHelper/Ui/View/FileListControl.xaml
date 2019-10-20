@@ -110,14 +110,19 @@
                 Width="50"
                 Margin="3"
                 Command="{Binding DeleteCommand}"
-                Content="Delete"
-                ToolTip="Deletes the selected file" />
+                ToolTip="Deletes the selected file">
+                <iconPacks:PackIconFontAwesome Kind="TrashSolid" />
+            </Button>
             <Button
                 Width="50"
                 Margin="3"
                 Command="{Binding OpenCommand}"
-                Content="Open"
-                ToolTip="Opens the selected file" />
+                ToolTip="Opens the selected file">
+                <iconPacks:PackIconFontAwesome
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Kind="FolderOpenSolid" />
+            </Button>
         </StackPanel>
     </Grid>
 </UserControl>

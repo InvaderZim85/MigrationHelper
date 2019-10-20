@@ -102,7 +102,7 @@ namespace MigrationHelper
             }
 
             _project.Save();
-            return (true, resourceDir);
+            return (true, scriptName);
         }
 
         /// <summary>
@@ -442,12 +442,7 @@ namespace MigrationHelper
         /// <returns>The path of the script directory</returns>
         private static string GetScriptDirectory(string projectDir, bool complete)
         {
-            //var scriptDir = complete ? string.IsNullOrEmpty(Properties.Settings.Default.ScriptDirectory)
-            //        ? projectDir
-            //        : Path.Combine(projectDir, Properties.Settings.Default.ScriptDirectory)
-            //    : string.IsNullOrEmpty() ;
-
-            var scriptDir = "";
+            string scriptDir;
             if (string.IsNullOrEmpty(Properties.Settings.Default.ScriptDirectory))
             {
                 scriptDir = complete ? projectDir : "";
@@ -478,14 +473,14 @@ namespace MigrationHelper
                         result = $"{scriptDir}\\{subScriptDir}{DateTime.Now:yyyyMM}";
                         break;
                 }
-
-                if (complete && !Directory.Exists(result))
-                    Directory.CreateDirectory(result);
             }
             else
             {
-                result = Properties.Settings.Default.ScriptDirectory;
+                result = Path.Combine(projectDir, scriptDir);
             }
+
+            if (complete && !Directory.Exists(result))
+                Directory.CreateDirectory(result);
 
             return result;
         }

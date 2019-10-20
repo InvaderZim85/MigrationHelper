@@ -24,9 +24,8 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
@@ -37,202 +36,234 @@
         <components:Headline
             Grid.Row="0"
             Grid.Column="0"
-            Grid.ColumnSpan="3"
+            Grid.ColumnSpan="2"
             HeadlineText="Migration" />
 
-        <Grid Grid.Row="1" Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="{Binding ShowErrorControl, Converter={StaticResource VisibilityToRowHeightConverter}}" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <Label
-                Grid.Row="0"
-                Grid.Column="0"
-                Content="Project file:" />
-            <TextBox
-                Grid.Row="0"
-                Grid.Column="1"
-                Margin="3"
-                Text="{Binding ProjectFile}" />
-            <Button
-                Grid.Row="0"
-                Grid.Column="2"
-                Width="30"
-                Margin="3"
-                Command="{Binding OpenProjectFileCommand}"
-                Content="..."
-                ToolTip="Open the project file of the migration project (*.csproj)" />
-
-            <Label
-                Grid.Row="1"
-                Grid.Column="0"
-                HorizontalAlignment="Right"
-                Content="Script dir:" />
-            <TextBox
-                Grid.Row="1"
-                Grid.Column="1"
-                Margin="3"
-                Text="{Binding ScriptDir}" />
-
-            <Separator
-                Grid.Row="2"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Margin="3" />
-
-            <Label
-                Grid.Row="4"
-                Grid.Column="0"
-                HorizontalAlignment="Right"
-                Content="Filename:" />
-            <TextBox
-                Grid.Row="4"
-                Grid.Column="1"
-                Margin="3"
-                mah:TextBoxHelper.Watermark="Filename"
-                Text="{Binding Filename, UpdateSourceTrigger=PropertyChanged}" />
-
-            <Separator
-                Grid.Row="5"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Margin="3" />
-
-            <Label
-                Grid.Row="6"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Content="Content of the migration file:" />
-            <Button
-                Grid.Row="6"
-                Grid.Column="1"
-                Grid.ColumnSpan="2"
-                Width="80"
-                Margin="3"
-                HorizontalAlignment="Right"
-                Command="{Binding CheckCommand}"
-                Content="Check SQL"
-                ToolTip="Checks the inserted SQL script" />
-            <iconPacks:PackIconMaterial
-                Grid.Row="6"
-                Grid.Column="1"
-                Margin="0,0,50,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                Foreground="Green"
-                Kind="CodeTagsCheck"
-                ToolTip="SQL script is valid"
-                Visibility="{Binding ShowValidIcon}" />
-            <iconPacks:PackIconMaterial
-                Grid.Row="6"
-                Grid.Column="1"
-                Margin="0,0,50,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                Foreground="Red"
-                Kind="MessageAlert"
-                ToolTip="SQL script contains errors"
-                Visibility="{Binding ShowErrorIcon}" />
-
-            <avalonedit:TextEditor
-                Name="SqlEditor"
-                Grid.Row="7"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                BorderBrush="Black"
-                BorderThickness="1"
-                FontFamily="Hack"
-                FontSize="12"
-                ShowLineNumbers="True" />
-
-            <!--  Error Window!  -->
-            <GridSplitter
-                Grid.Row="8"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Height="3"
-                HorizontalAlignment="Stretch" />
-            <local:SqlErrorControl
-                Grid.Row="9"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                DoubleClick="SqlErrorControl_OnDoubleClick"
-                ErrorList="{Binding ErrorList}"
-                Visibility="{Binding ShowErrorControl, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-            <Button
-                Grid.Row="10"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Width="110"
-                Margin="3"
-                HorizontalAlignment="Left"
-                Command="{Binding OpenExistingFileCommand}"
-                Content="Open existing file"
-                ToolTip="Open an existing sql file" />
-
-            <StackPanel
-                Grid.Row="10"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                FlowDirection="RightToLeft"
-                Orientation="Horizontal">
-                <Button
-                    Width="50"
-                    Margin="3"
-                    Command="{Binding NewCommand}"
-                    Content="New"
-                    ToolTip="Resets the input to create a new migration file" />
-                <Button
-                    Width="50"
-                    Margin="3"
-                    Command="{Binding SaveCommand}"
-                    Content="Save"
-                    IsEnabled="{Binding CreateButtonEnabled}"
-                    ToolTip="Saves the current migration file" />
-            </StackPanel>
-        </Grid>
-
-        <GridSplitter
+        <!--  migration control  -->
+        <Border
             Grid.Row="1"
-            Grid.Column="1"
-            Width="3"
-            Margin="2"
-            HorizontalAlignment="Stretch" />
-
-        <Grid Grid.Row="1" Grid.Column="2">
+            Grid.Column="0"
+            Margin="3"
+            BorderBrush="LightGray"
+            BorderThickness="1">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="{Binding ShowErrorControl, Converter={StaticResource VisibilityToRowHeightConverter}}" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <components:Headline
-                    Grid.Row="0"
-                    HeadlineText="Project files"
-                    IconVisibility="Collapsed" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-                <local:FileListControl
-                    x:Name="FileList"
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Content="Project file:" />
+                <TextBox
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="3"
+                    Text="{Binding ProjectFile}" />
+                <Button
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Width="30"
+                    Margin="3"
+                    Command="{Binding OpenProjectFileCommand}"
+                    Content="..."
+                    ToolTip="Open the project file of the migration project (*.csproj)" />
+
+                <Label
                     Grid.Row="1"
-                    SelectionChanged="FileList_OnSelectionChanged" />
+                    Grid.Column="0"
+                    HorizontalAlignment="Right"
+                    Content="Script dir:" />
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="3"
+                    Text="{Binding ScriptDir}" />
+
+                <Separator
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    Margin="3" />
+
+                <Label
+                    Grid.Row="4"
+                    Grid.Column="0"
+                    HorizontalAlignment="Right"
+                    Content="Filename:" />
+                <TextBox
+                    Grid.Row="4"
+                    Grid.Column="1"
+                    Margin="3"
+                    mah:TextBoxHelper.Watermark="Filename"
+                    Text="{Binding Filename, UpdateSourceTrigger=PropertyChanged}" />
+
+                <Separator
+                    Grid.Row="5"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    Margin="3" />
+
+                <Label
+                    Grid.Row="6"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    VerticalAlignment="Center"
+                    Content="Migration file script:" />
+
+                <StackPanel
+                    Grid.Row="6"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    FlowDirection="RightToLeft"
+                    Orientation="Horizontal">
+                    <Button
+                        Width="50"
+                        Height="30"
+                        Margin="3"
+                        Command="{Binding ClearCommand}"
+                        ToolTip="Clears the sql script">
+                        <iconPacks:PackIconFontAwesome Kind="BroomSolid" />
+                    </Button>
+                    <Button
+                        Width="50"
+                        Margin="3"
+                        HorizontalAlignment="Right"
+                        Command="{Binding CheckCommand}"
+                        ToolTip="Checks the inserted SQL script">
+                        <iconPacks:PackIconMaterial Kind="CodeTagsCheck" />
+                    </Button>
+                    <iconPacks:PackIconMaterial
+                        Margin="3"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Foreground="Green"
+                        Kind="CodeTagsCheck"
+                        ToolTip="SQL script is valid"
+                        Visibility="{Binding ShowValidIcon}" />
+                    <iconPacks:PackIconMaterial
+                        Margin="3"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Foreground="Red"
+                        Kind="MessageAlert"
+                        ToolTip="SQL script contains errors"
+                        Visibility="{Binding ShowErrorIcon}" />
+
+                </StackPanel>
+
+                <avalonedit:TextEditor
+                    Name="SqlEditor"
+                    Grid.Row="7"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    BorderBrush="Black"
+                    BorderThickness="1"
+                    FontFamily="Hack"
+                    FontSize="12"
+                    ShowLineNumbers="True" />
+
+                <!--  Error Window!  -->
+                <GridSplitter
+                    Grid.Row="8"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    Height="3"
+                    HorizontalAlignment="Stretch" />
+                <local:SqlErrorControl
+                    Grid.Row="9"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    DoubleClick="SqlErrorControl_OnDoubleClick"
+                    ErrorList="{Binding ErrorList}"
+                    Visibility="{Binding ShowErrorControl, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+
+
+                <StackPanel
+                    Grid.Row="10"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Orientation="Horizontal">
+                    <Button
+                        Width="50"
+                        Height="30"
+                        Margin="3"
+                        HorizontalAlignment="Left"
+                        Command="{Binding OpenExistingFileCommand}"
+                        ToolTip="Open an existing sql file">
+                        <iconPacks:PackIconFontAwesome
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Kind="FolderOpenSolid" />
+                    </Button>
+                    <Button
+                        Width="50"
+                        Margin="3"
+                        Command="{Binding NewCommand}"
+                        ToolTip="Resets the input to create a new migration file">
+                        <iconPacks:PackIconMaterial Kind="FilePlus" />
+                    </Button>
+                </StackPanel>
+
+
+                <Button
+                    Grid.Row="10"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    Width="50"
+                    Margin="3"
+                    HorizontalAlignment="Right"
+                    Command="{Binding SaveCommand}"
+                    IsEnabled="{Binding CreateButtonEnabled}"
+                    ToolTip="Saves the current migration file">
+                    <iconPacks:PackIconFontAwesome Kind="SaveSolid" />
+                </Button>
             </Grid>
-        </Grid>
+        </Border>
+
+        <!--  file list  -->
+        <Border
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="3"
+            BorderBrush="LightGray"
+            BorderThickness="1">
+            <Grid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <components:Headline
+                        Grid.Row="0"
+                        HeadlineText="Project files"
+                        IconVisibility="Collapsed" />
+
+                    <local:FileListControl
+                        x:Name="FileList"
+                        Grid.Row="1"
+                        SelectionChanged="FileList_OnSelectionChanged" />
+                </Grid>
+            </Grid>
+        </Border>
+
     </Grid>
 </UserControl>

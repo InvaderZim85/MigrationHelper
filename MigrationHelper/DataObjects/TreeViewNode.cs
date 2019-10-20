@@ -15,17 +15,17 @@ namespace MigrationHelper.DataObjects
         /// <summary>
         /// Gets or sets the name of the entry
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
 
         /// <summary>
         /// Gets or sets the full path 
         /// </summary>
-        public string FullPath { get; set; }
+        public string FullPath { get; set; } = "";
 
         /// <summary>
         /// Gets or sets the file extension
         /// </summary>
-        public string FileExtension { get; set; }
+        public string FileExtension { get; set; } = "";
 
         /// <summary>
         /// Gets or sets the creation date
@@ -70,7 +70,7 @@ namespace MigrationHelper.DataObjects
         /// <summary>
         /// Creates a new empty instance of the <see cref="TreeViewNode"/>
         /// </summary>
-        private TreeViewNode() { }
+        public TreeViewNode() { }
 
         /// <summary>
         /// Creates a new instance of the <see cref="TreeViewNode"/>

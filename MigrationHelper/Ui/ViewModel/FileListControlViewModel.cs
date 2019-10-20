@@ -66,7 +66,7 @@ namespace MigrationHelper.Ui.ViewModel
         /// <summary>
         /// Backing field for <see cref="ShowNotIncludedFilesInfo"/>
         /// </summary>
-        private Visibility _showNotIncludedFilesInfo = Visibility.Visible;
+        private Visibility _showNotIncludedFilesInfo = Visibility.Hidden;
 
         /// <summary>
         /// Gets or sets the visibility of the not included files which should be shown when not included files available
@@ -103,7 +103,10 @@ namespace MigrationHelper.Ui.ViewModel
                 _rootNode = rootNode;
                 _notIncludedFiles = notIncludedFiles;
 
-                if (_notIncludedFiles?.Any() ?? false)
+                if (_rootNode == null)
+                    return;
+
+                if (_notIncludedFiles != null && _notIncludedFiles.Any())
                     ShowNotIncludedFilesInfo = Visibility.Visible;
 
                 FilterList();
@@ -262,10 +265,15 @@ namespace MigrationHelper.Ui.ViewModel
         private TreeViewNode GetSelectedNode()
         {
             // The first node is the root node
-            var rootNode = NodeList.FirstOrDefault();
+            var rootNode = NodeList?.FirstOrDefault();
 
             if (rootNode == null)
                 return null;
+
+            // Check direct under 
+            var subNode = rootNode.SubNodes.FirstOrDefault(f => f.IsSelected);
+            if (subNode != null)
+                return subNode;
 
             foreach (var node in rootNode.SubNodes)
             {

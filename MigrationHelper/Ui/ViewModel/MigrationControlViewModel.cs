@@ -55,7 +55,7 @@ namespace MigrationHelper.Ui.ViewModel
         /// <summary>
         /// Backing field for <see cref="ScriptDir"/>
         /// </summary>
-        private string _scriptDir;
+        private string _scriptDir = "Scripts"; // Default directory
 
         /// <summary>
         /// Gets or sets the name of the script directory
@@ -207,6 +207,11 @@ namespace MigrationHelper.Ui.ViewModel
         public ICommand NewCommand => new DelegateCommand(ClearInput);
 
         /// <summary>
+        /// The command to clear the sql script
+        /// </summary>
+        public ICommand ClearCommand => new DelegateCommand(ClearSqlScript);
+
+        /// <summary>
         /// Opens the project file
         /// </summary>
         private void OpenProjectFile()
@@ -241,6 +246,19 @@ namespace MigrationHelper.Ui.ViewModel
             Filename = "";
             _textGetSet.Set("");
             _existingFile = false;
+            ShowErrorControl = false;
+            ErrorList = new ObservableCollection<ErrorEntry>();
+
+            ShowErrorIcon = Visibility.Hidden;
+            ShowValidIcon = Visibility.Hidden;
+        }
+
+        /// <summary>
+        /// Clears the sql script
+        /// </summary>
+        private void ClearSqlScript()
+        {
+            _textGetSet.Set("");
             ShowErrorControl = false;
             ErrorList = new ObservableCollection<ErrorEntry>();
 
