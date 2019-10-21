@@ -65,12 +65,28 @@ namespace MigrationHelper.Ui.ViewModel
         }
 
         /// <summary>
+        /// Backing field for <see cref="BranchName"/>
+        /// </summary>
+        private string _branchName;
+
+        /// <summary>
+        /// Gets or sets the name of the currently selected branch
+        /// </summary>
+        public string BranchName
+        {
+            get => _branchName;
+            set => SetField(ref _branchName, value);
+        }
+
+        /// <summary>
         /// Init the view model
         /// </summary>
         /// <param name="dialogCoordinator">The mah apps dialog coordinator</param>
         public void InitViewModel(IDialogCoordinator dialogCoordinator)
         {
             _dialogCoordinator = dialogCoordinator;
+
+            Mediator.Register(nameof(SetBranchName), SetBranchName);
 
             var version = Helper.GetVersion();
 
@@ -92,6 +108,13 @@ namespace MigrationHelper.Ui.ViewModel
         {
             IUserControl control = null;
 
+            if (type == MenuItemType.Appearance)
+            {
+                var appearanceWindow = new AppearanceWindow();
+                appearanceWindow.ShowDialog();
+                return;
+            }
+
             if (_controlDictionary.ContainsKey(type))
             {
                 control = _controlDictionary[type];
@@ -102,6 +125,9 @@ namespace MigrationHelper.Ui.ViewModel
                 {
                     case MenuItemType.Migration:
                         control = new MigrationControl();
+                        break;
+                    case MenuItemType.MigrationSettings:
+                        control = new MigrationSettingsControl();
                         break;
                     case MenuItemType.Info:
                         control = new InfoControl();
@@ -128,6 +154,14 @@ namespace MigrationHelper.Ui.ViewModel
             control.InitControl();
 
             Control = control;
+        }
+
+        /// <summary>
+        /// Sets the name of the branch
+        /// </summary>
+        private void SetBranchName()
+        {
+            BranchName = $"Branch: {Helper.GetBranchName()}";
         }
     }
 }

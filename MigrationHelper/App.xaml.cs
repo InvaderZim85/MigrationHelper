@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using MahApps.Metro;
+using Props = MigrationHelper.Properties;
 
 namespace MigrationHelper
 {
@@ -7,6 +9,16 @@ namespace MigrationHelper
     /// </summary>
     public partial class App : Application
     {
+
+        /// <summary>
+        /// Occurs when the application is started
+        /// </summary>
+        private void App_OnStartup(object sender, StartupEventArgs e)
+        {
+            ThemeManager.ChangeAppStyle(Current, ThemeManager.GetAccent(Props.Settings.Default.Accent),
+                ThemeManager.GetAppTheme(Props.Settings.Default.Theme));
+        }
+
         /// <summary>
         /// Occurs when the application shuts down
         /// </summary>

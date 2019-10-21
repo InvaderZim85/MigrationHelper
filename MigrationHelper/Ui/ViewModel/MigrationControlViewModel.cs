@@ -7,7 +7,6 @@ using System.Windows.Input;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using MigrationHelper.DataObjects;
-using NLog.Fluent;
 using ZimLabs.WpfBase;
 
 namespace MigrationHelper.Ui.ViewModel
@@ -56,7 +55,7 @@ namespace MigrationHelper.Ui.ViewModel
         /// <summary>
         /// Backing field for <see cref="ScriptDir"/>
         /// </summary>
-        private string _scriptDir;
+        private string _scriptDir = "Scripts"; // Default directory
 
         /// <summary>
         /// Gets or sets the name of the script directory
@@ -124,7 +123,7 @@ namespace MigrationHelper.Ui.ViewModel
         /// <summary>
         /// Backing field for <see cref="ShowErrorIcon"/>
         /// </summary>
-        private Visibility _showErrorIcon = Visibility.Hidden;
+        private Visibility _showErrorIcon = Visibility.Collapsed;
 
         /// <summary>
         /// Gets or sets the visibility of the error icon
@@ -138,7 +137,7 @@ namespace MigrationHelper.Ui.ViewModel
         /// <summary>
         /// Backing field for <see cref="ShowValidIcon"/>
         /// </summary>
-        private Visibility _showValidIcon = Visibility.Hidden;
+        private Visibility _showValidIcon = Visibility.Collapsed;
 
         /// <summary>
         /// Gets or sets the visibility of the valid icon
@@ -147,6 +146,46 @@ namespace MigrationHelper.Ui.ViewModel
         {
             get => _showValidIcon;
             set => SetField(ref _showValidIcon, value);
+        }
+
+        /// <summary>
+        /// Backing field for <see cref="HasChanges"/>
+        /// </summary>
+        private bool _hasChanges;
+
+        /// <summary>
+        /// Gets or sets the value which indicates if the scrip contains changes
+        /// </summary>
+        public bool HasChanges
+        {
+            get => _hasChanges;
+            set
+            {
+                SetField(ref _hasChanges, value);
+                var text = "*";
+                if (value && !MigrationHeader.Contains(text))
+                {
+                    MigrationHeader += $" {text}";
+                }
+                else if (!value)
+                {
+                    MigrationHeader = MigrationHeader.Replace($" {text}", "");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Backing field for <see cref="MigrationHeader"/>
+        /// </summary>
+        private string _migrationHeader = "Migration file script";
+
+        /// <summary>
+        /// Gets or sets the header of the migration script editr
+        /// </summary>
+        public string MigrationHeader
+        {
+            get => _migrationHeader;
+            set => SetField(ref _migrationHeader, value);
         }
 
         /// <summary>
@@ -208,6 +247,11 @@ namespace MigrationHelper.Ui.ViewModel
         public ICommand NewCommand => new DelegateCommand(ClearInput);
 
         /// <summary>
+        /// The command to clear the sql script
+        /// </summary>
+        public ICommand ClearCommand => new DelegateCommand(ClearSqlScript);
+
+        /// <summary>
         /// Opens the project file
         /// </summary>
         private void OpenProjectFile()
@@ -237,16 +281,43 @@ namespace MigrationHelper.Ui.ViewModel
         /// <summary>
         /// Clears the input for a new entry
         /// </summary>
-        public void ClearInput()
+        public async void ClearInput()
         {
+            if (HasChanges)
+            {
+                if (await _dialogCoordinator.ShowMessageAsync(this, "Changes",
+                        "There are unsaved changes. Continue?", MessageDialogStyle.AffirmativeAndNegative,
+                        new MetroDialogSettings {AffirmativeButtonText = "Yes", NegativeButtonText = "No"}) ==
+                    MessageDialogResult.Negative)
+                    return;
+            }
+
             Filename = "";
             _textGetSet.Set("");
             _existingFile = false;
             ShowErrorControl = false;
             ErrorList = new ObservableCollection<ErrorEntry>();
 
-            ShowErrorIcon = Visibility.Hidden;
-            ShowValidIcon = Visibility.Hidden;
+            ShowErrorIcon = Visibility.Collapsed;
+            ShowValidIcon = Visibility.Collapsed;
+            
+            HasChanges = false;
+        }
+
+        /// <summary>
+        /// Clears the sql script
+        /// </summary>
+        private void ClearSqlScript()
+        {
+            _textGetSet.Set("");
+            ShowErrorControl = false;
+            ErrorList = new ObservableCollection<ErrorEntry>();
+
+            ShowErrorIcon = Visibility.Collapsed;
+            ShowValidIcon = Visibility.Collapsed;
+
+            if (_existingFile)
+                HasChanges = true;
         }
 
         /// <summary>
@@ -360,8 +431,10 @@ namespace MigrationHelper.Ui.ViewModel
                     _setSelectedFile(filename);
 
                     await _dialogCoordinator.ShowMessageAsync(this, "File",
-                        $"Migration file created / updated. Filename: {filename}");
-                    Logger.Info($"Migration file created / updated. Filename: {filename}");
+                        $"Migration file created / updated. File: {filename}");
+                    Logger.Info($"Migration file created / updated. File: {filename}");
+
+                    HasChanges = false;
                 }
                 else
                     await _dialogCoordinator.ShowMessageAsync(this, "Error",
@@ -384,6 +457,15 @@ namespace MigrationHelper.Ui.ViewModel
         /// </summary>
         private async void OpenExistingFile()
         {
+            if (HasChanges)
+            {
+                if (await _dialogCoordinator.ShowMessageAsync(this, "Changes",
+                        "There are unsaved changes. Continue?", MessageDialogStyle.AffirmativeAndNegative,
+                        new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" }) ==
+                    MessageDialogResult.Negative)
+                    return;
+            }
+
             var dialog = new CommonOpenFileDialog
             {
                 IsFolderPicker = false,
@@ -401,6 +483,8 @@ namespace MigrationHelper.Ui.ViewModel
             try
             {
                 SetSqlText(dialog.FileName);
+
+                HasChanges = false;
             }
             catch (Exception ex)
             {
@@ -415,13 +499,13 @@ namespace MigrationHelper.Ui.ViewModel
         /// Opens an existing file
         /// </summary>
         /// <param name="file">The file</param>
-        public void OpenSelectedFile(FileItem file)
+        public void OpenSelectedFile(TreeViewNode file)
         {
             _existingFile = true;
 
-            Filename = file.Name.Replace(file.File.Extension, "");
+            Filename = file.Name.Replace(file.FileExtension, "");
 
-            SetSqlText(file.File.FullName);
+            SetSqlText(file.FullPath);
         }
 
         /// <summary>

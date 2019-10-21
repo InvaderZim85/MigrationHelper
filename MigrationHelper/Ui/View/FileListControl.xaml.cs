@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.IO;
 using System.Windows.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MigrationHelper.DataObjects;
@@ -16,7 +15,7 @@ namespace MigrationHelper.Ui.View
         /// The delegate for the <see cref="SelectionChanged"/> event
         /// </summary>
         /// <param name="file">The selected file</param>
-        public delegate void SelectionChangedEventHandler(FileItem file);
+        public delegate void SelectionChangedEventHandler(TreeViewNode file);
 
         /// <summary>
         /// Occurs when the user selects another file
@@ -59,15 +58,15 @@ namespace MigrationHelper.Ui.View
             if (!(DataContext is FileListControlViewModel viewModel) || string.IsNullOrEmpty(filename))
                 return;
 
-            var item = viewModel.SetSelectedFile(filename);
-            DataGrid.ScrollIntoView(item);
+            viewModel.SetSelectedFile(filename);
+            NodeTreeView.BringIntoView();
         }
 
         /// <summary>
         /// Fires the <see cref="SelectionChanged"/> event when the user selects another file
         /// </summary>
         /// <param name="file">The selected file</param>
-        private void SelectionChangedNotifier(FileItem file)
+        private void SelectionChangedNotifier(TreeViewNode file)
         {
             SelectionChanged?.Invoke(file);
         }

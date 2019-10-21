@@ -11,8 +11,15 @@ namespace MigrationHelper.Ui.View
     /// </summary>
     public partial class SqlErrorControl : UserControl
     {
+        /// <summary>
+        /// The delegate for the <see cref="SqlErrorControl.DoubleClick"/> event
+        /// </summary>
+        /// <param name="entry">The selected entry</param>
         public delegate void DoubleClickEventHandler(ErrorEntry entry);
 
+        /// <summary>
+        /// Occurs when the user double click an error entry
+        /// </summary>
         public event DoubleClickEventHandler DoubleClick;
 
         /// <summary>
