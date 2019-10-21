@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MigrationHelper.Ui.ViewModel;
 
@@ -9,7 +10,7 @@ namespace MigrationHelper.Ui.View
     /// <summary>
     /// Interaction logic for NotIncludedFilesWindow.xaml
     /// </summary>
-    public partial class NotIncludedFilesWindow
+    public partial class NotIncludedFilesWindow : MetroWindow
     {
         /// <summary>
         /// Contains the list with the files

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Navigation;
 using MahApps.Metro.Controls.Dialogs;
 using MigrationHelper.Ui.ViewModel;
@@ -9,7 +10,7 @@ namespace MigrationHelper.Ui.View
     /// <summary>
     /// Interaction logic for InfoControl.xaml
     /// </summary>
-    public partial class InfoControl : IUserControl
+    public partial class InfoControl : UserControl, IUserControl
     {
         /// <summary>
         /// Gets the description

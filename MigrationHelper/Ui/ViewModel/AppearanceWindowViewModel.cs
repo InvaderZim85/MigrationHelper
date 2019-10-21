@@ -136,7 +136,7 @@ namespace MigrationHelper.Ui.ViewModel
         /// <summary>
         /// Changes the current theme
         /// </summary>
-        private void ChangeTheme(bool toDefault = false)
+        public void ChangeTheme(bool toDefault = false)
         {
             if (_init)
                 return;

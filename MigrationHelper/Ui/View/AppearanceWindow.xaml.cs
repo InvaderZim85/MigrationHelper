@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using MahApps.Metro.Controls;
 using MigrationHelper.Ui.ViewModel;
 
 namespace MigrationHelper.Ui.View
@@ -6,7 +7,7 @@ namespace MigrationHelper.Ui.View
     /// <summary>
     /// Interaction logic for AppearanceWindow.xaml
     /// </summary>
-    public partial class AppearanceWindow
+    public partial class AppearanceWindow : MetroWindow
     {
         /// <summary>
         /// Creates a new instance of the <see cref="AppearanceWindow"/>
@@ -38,6 +39,10 @@ namespace MigrationHelper.Ui.View
         /// </summary>
         private void ButtonClose_Click(object sender, RoutedEventArgs e)
         {
+            // Set the current theme
+            if (DataContext is AppearanceWindowViewModel viewModel)
+                viewModel.ChangeTheme(true);
+
             Close();
         }
     }

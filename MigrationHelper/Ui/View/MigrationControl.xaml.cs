@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Controls;
 using System.Windows.Media;
 using MahApps.Metro.Controls.Dialogs;
 using MigrationHelper.DataObjects;
@@ -10,7 +11,7 @@ namespace MigrationHelper.Ui.View
     /// <summary>
     /// Interaction logic for MigrationControl.xaml
     /// </summary>
-    public partial class MigrationControl : IUserControl
+    public partial class MigrationControl : UserControl, IUserControl
     {
         /// <summary>
         /// Gets the description of the control
