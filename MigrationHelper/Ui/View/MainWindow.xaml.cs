@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.Windows;
-using MahApps.Metro.Controls;
+﻿using System.Windows;
 using MahApps.Metro.Controls.Dialogs;
 using MigrationHelper.Ui.ViewModel;
 
@@ -9,7 +7,7 @@ namespace MigrationHelper.Ui.View
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow
     {
         /// <summary>
         /// Creates a new instance of the <see cref="MainWindow"/>

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Windows.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MigrationHelper.DataObjects;
 using MigrationHelper.Ui.ViewModel;
@@ -9,7 +8,7 @@ namespace MigrationHelper.Ui.View
     /// <summary>
     /// Interaction logic for FileListControl.xaml
     /// </summary>
-    public partial class FileListControl : UserControl
+    public partial class FileListControl
     {
         /// <summary>
         /// The delegate for the <see cref="SelectionChanged"/> event

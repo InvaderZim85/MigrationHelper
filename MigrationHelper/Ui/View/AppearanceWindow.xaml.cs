@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using MahApps.Metro.Controls;
 using MigrationHelper.Ui.ViewModel;
 
 namespace MigrationHelper.Ui.View
@@ -7,7 +6,7 @@ namespace MigrationHelper.Ui.View
     /// <summary>
     /// Interaction logic for AppearanceWindow.xaml
     /// </summary>
-    public partial class AppearanceWindow : MetroWindow
+    public partial class AppearanceWindow
     {
         /// <summary>
         /// Creates a new instance of the <see cref="AppearanceWindow"/>

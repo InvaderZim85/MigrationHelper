@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using MigrationHelper.DataObjects;
 
@@ -9,7 +8,7 @@ namespace MigrationHelper.Ui.View
     /// <summary>
     /// Interaction logic for SqlErrorControl.xaml
     /// </summary>
-    public partial class SqlErrorControl : UserControl
+    public partial class SqlErrorControl
     {
         public delegate void DoubleClickEventHandler(ErrorEntry entry);
 
