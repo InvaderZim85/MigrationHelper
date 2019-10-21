@@ -123,6 +123,38 @@ namespace MigrationHelper
         }
 
         /// <summary>
+        /// Adds an existing file to the project
+        /// </summary>
+        /// <param name="files">The list with the files</param>
+        /// <returns>true when successful, otherwise false</returns>
+        public static bool IncludeProjectFiles(List<NotIncludedFile> files)
+        {
+            LoadProject();
+
+            // Remove the project dir path to get only the resource path
+            var projectDir = Path.GetDirectoryName(Properties.Settings.Default.ProjectFile);
+            if (string.IsNullOrEmpty(projectDir))
+                throw new DirectoryNotFoundException("The directory of the project file cannot be found.");
+
+            foreach (var file in files)
+            {
+                var path = file.FilePath.Replace($"{projectDir}\\", "");
+
+                var itemList = _project.AddItem("EmbeddedResource", path);
+
+                // Check if the file was added
+                if (!itemList.Any(a => a.EvaluatedInclude.EqualsIgnoreCase(path)))
+                {
+                    return false;
+                }
+            }
+
+            _project.Save();
+
+            return true;
+        }
+
+        /// <summary>
         /// Gets the package information of the project
         /// </summary>
         /// <returns>The list with the reference data</returns>
@@ -167,20 +199,7 @@ namespace MigrationHelper
                 ? projectDir
                 : Path.Combine(projectDir, Properties.Settings.Default.ScriptDirectory);
 
-            if (Properties.Settings.Default.UseSubFolder)
-            {
-                return LoadScriptFilesWithSubDir(fileDir, projectFiles);
-            }
-
-            // Load only the main directory
-            var dirInfo = new DirectoryInfo(fileDir);
-            if (!dirInfo.Exists)
-                return (null, null);
-
-            var result = new TreeViewNode(dirInfo);
-            var files = AddScriptFiles(result, projectFiles);
-
-            return (result, GetNotIncludedFiles(projectFiles, files));
+            return LoadScriptFilesWithSubDir(fileDir, projectFiles);
         }
 
         /// <summary>
@@ -483,6 +502,29 @@ namespace MigrationHelper
                 Directory.CreateDirectory(result);
 
             return result;
+        }
+
+        /// <summary>
+        /// Deletes the given files
+        /// </summary>
+        /// <param name="files">The list with the files</param>
+        /// <returns>true when everything was successful, otherwise false</returns>
+        public static bool DeleteFiles(List<NotIncludedFile> files)
+        {
+            try
+            {
+                foreach (var file in files)
+                {
+                    File.Delete(file.FilePath);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(nameof(DeleteFiles), ex);
+                return false;
+            }
         }
     }
 }

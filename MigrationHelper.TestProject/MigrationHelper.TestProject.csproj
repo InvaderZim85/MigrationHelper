@@ -50,9 +50,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="E:\Proggen\MigrationHelper\MigrationHelper.TestProject\Scripts\191020213608_testwithoutsubfolder.sql" />
     <EmbeddedResource Include="Scripts\Scripts_2019\191020214133_SubScript1.sql" />
     <EmbeddedResource Include="Scripts\Scripts_2019\191020214336_secondscript.sql" />
+    <EmbeddedResource Include="Scripts\Scripts_2019\191021080445_SubTest.sql" />
+    <EmbeddedResource Include="Scripts\TestFile.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -108,6 +108,8 @@ namespace MigrationHelper.Ui.ViewModel
 
                 if (_notIncludedFiles != null && _notIncludedFiles.Any())
                     ShowNotIncludedFilesInfo = Visibility.Visible;
+                else
+                    ShowNotIncludedFilesInfo = Visibility.Hidden;
 
                 FilterList();
             }
@@ -140,6 +142,8 @@ namespace MigrationHelper.Ui.ViewModel
         {
             var dialog = new NotIncludedFilesWindow(_notIncludedFiles);
             dialog.ShowDialog();
+
+            LoadFiles();
         });
 
         /// <summary>

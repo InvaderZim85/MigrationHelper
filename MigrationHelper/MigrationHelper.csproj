@@ -153,12 +153,14 @@
     </Compile>
     <Compile Include="DataObjects\CustomEnums.cs" />
     <Compile Include="DataObjects\ErrorEntry.cs" />
+    <Compile Include="DataObjects\NotIncludedFile.cs" />
     <Compile Include="DataObjects\ReferenceEntry.cs" />
     <Compile Include="DataObjects\TextValueItem.cs" />
     <Compile Include="DataObjects\TreeViewNode.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Mediator.cs" />
+    <Compile Include="Ui\Components\CustomDataGrid.cs" />
     <Compile Include="Ui\Components\Headline.xaml.cs">
       <DependentUpon>Headline.xaml</DependentUpon>
     </Compile>

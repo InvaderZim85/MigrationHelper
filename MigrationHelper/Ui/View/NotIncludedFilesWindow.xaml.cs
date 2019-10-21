@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using MigrationHelper.Ui.ViewModel;
 
 namespace MigrationHelper.Ui.View
@@ -33,7 +34,7 @@ namespace MigrationHelper.Ui.View
         private void NotIncludedFilesWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
             if (DataContext is NotIncludedFilesWindowViewModel viewModel)
-                viewModel.InitViewModel(_fileList);
+                viewModel.InitViewModel(DialogCoordinator.Instance, _fileList);
         }
 
         /// <summary>
