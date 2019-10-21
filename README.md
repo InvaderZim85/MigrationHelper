@@ -1,69 +1,95 @@
-# MigrationHelper
+# Migration Helper
 
 **Content**
 <!-- TOC -->
 
-- [MigrationHelper](#migrationhelper)
-    - [General](#general)
-    - [Usage](#usage)
-        - [Preparations](#preparations)
-        - [New migration script](#new-migration-script)
-        - [Error analysis](#error-analysis)
-    - [Packages](#packages)
-        - [NuGet-Packages](#nuget-packages)
-        - [SQL Parser](#sql-parser)
+- [History](#history)
+- [General](#general)
+- [Usage](#usage)
+    - [First use](#first-use)
+    - [Buttons](#buttons)
+    - [Create a new migration script](#create-a-new-migration-script)
+    - [Edit migration script](#edit-migration-script)
+    - [Analyze errors](#analyze-errors)
+- [Settings menu](#settings-menu)
+- [Help menu](#help-menu)
 
 <!-- /TOC -->
 
+## History
+| Version | Date | Created / Edit by |
+|---|---|---|
+| 1.0 | 2019-04-07 | A. Pouwels |
+| 1.1 | 2019-10-21 | A. Pouwels |
+
 ## General
-When you use [dbup](https://dbup.github.io) you can use this small tool to add a new migration script to you migration project without opening visual studio.
+The *Migration Helper* is a small tool to create migration script for projects which uses the migration project [dbup](https://dbup.github.io).
 
 ## Usage
-### Preparations
-Open the tool and add the path of your migration project and the name of the script directory (if exists, otherwise leave it empty).
 
-![001](Images/001.png)
+### First use
+When you start the migration helper for the first time, some settings have to be made:
 
-- Project file: The path of your migration project
-- Script dir: The name of your script direcotry (leave it blank if you don't have a special folder for the scripts)
+1. **Project file**: Add the path of the migration project file.
+2. **Script dir**: Add the name of the script directory (if you don't have a separate direcotry for the scripts, leave the field blank).
 
-### New migration script
-To create a new migration script, add the name of the script (*Filename:*) and the content of the script (you can open an existing file via *Open existing file*).
+![Settings](Images/Settings.png)
 
-![002](Images/002.png)
+### Buttons
+![Buttons](Images/Buttons.png)
 
-When you've entered a file name and the sql query you've the following options:
-- Check SQL: Checks the script for errors
-- Create without check: Creates a new migration script without checking the sql query
-- Create with check: Creates a new migration script with a check. If the check fails the process will be stopped.
+On the UI, you will find the following buttons:
+- Migration window
 
-### Error analysis
-If you have performed the check and have and error you will get further information (under the editor) about the error:
+    1. *New*: Creates a new migration file
+    2. *Open*: Opens an existing sql file
+    3. *Check*: Checks the inserted sql script.
+    4. *Clean*: Removes the inserted sql script
+    5. *Save*: Saves the current sql script
 
-![003](Images/003.png)
+- Navigation:
 
-## Packages
-The following packages were used for this application:
+    6. *Open*: Opens the selected script
+    7. *Delete*: Deletes the selected script
 
-### NuGet-Packages
-| Package | Version | Target Framework |
-|---|---|---|
-| AvalonEdit | 5.0.4 | .NET 4.7.2 |
-| ControlzEx | 3.0.2.4 | .NET 4.7.2 |
-| MahApps.Metro | 1.6.5 | .NET 4.7.2 |
-| MahApps.Metro.IconPacks | 2.3.0 | .NET 4.7.2 |
-| Microsoft.Build | 16.0.461 | .NET 4.7.2 |
-| Microsoft.Build.Framework | 16.0.461 | .NET 4.7.2 |
-| Microsoft.Build.Utilities.Core | 16.0.461 | .NET 4.7.2 |
-| Microsoft.VisualStudio.Setup.Configuration.Interop | 1.16.30 | .NET 4.7.2 |
-| Microsoft.Web.Xdt | 3.0.0 | .NET 4.7.2 |
-| Microsoft.WindowsAPICodePack-Core | 1.1.0.2 | .NET 4.7.2 |
-| Microsoft.WindowsAPICodePack-Shell | 1.1.0.0 | .NET 4.7.2 |
-| NuGet.Core | 2.14.0 | .NET 4.7.2 |
-| System.Collections.Immutable | 1.5.0 | .NET 4.7.2 |
-| System.Threading.Tasks.Dataflow | 4.9.0 | .NET 4.7.2 |
-| ZimLabs.Utility | 0.0.4 | .NET 4.7.2 |
-| ZimLabs.WpfBase | 0.0.4 | .NET 4.7.2 |
+- Settings:
 
-### SQL Parser
-The SQL Parsers uses the `Microsoft.SqlServer.Management.SqlParser.dll` which is a part of the MS SQL Server.
+    8. *Open*: Opens a migration project
+
+### Create a new migration script
+![Migration](Images/001.png)
+
+1. Add the name of the migration script (*Filename*)
+2. Add the sql query or use an existing script file (*Open existing file*)
+
+### Edit migration script
+If you want to edit an existing migration script you can select it from the right. All migration scripts which are stored in the given directory (*Script dir*) and included into the project will be shown on the right.
+
+### Analyze errors
+If your script contains errors they will be shown under the editor:
+
+![Error](Images/006.png)
+
+You can perform a double click on the error and the cursor in the editor will jump to the desired position.
+
+## Settings menu
+Under *Settings* you will find the following settings:
+
+![Settings](Images/002.png)
+
+The settings contains the following options:
+- *Exclude dirs*: Enter the directories which should ignored during the loading process. You can add multiple names separated by a "**;**"
+- *Create sub folder*: If you choose this option, every script will be stored in a separate sub directory.
+- *Folder format*: Enter the name of the sub folder (only available when *Create sub folder* is selected)
+- *Date format*: If you want to add a date to the sub folder, select the desired option (only available when *Create sub folder* is selected). Following options are available:
+   - *None*: Nothing will be added
+   - *Year*: The year (Format `yyyy`) will be added. For example: `Scripts_2019`
+   - *YearAndMonth*: The year and the month (Format `yyyyMM`) will be added. For example: `Scripts_201910`
+
+## Help menu
+![Help](Images/003.png)
+
+The help menu contains the following items:
+1. *Appearance*: Opens a dialog where you can switch the appearance of the windows
+2. *Manual*: Opens this document
+3. *About*: Opens a dialog with some information about the tool
