@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -123,7 +125,7 @@ namespace MigrationHelper.Ui.ViewModel
         /// <summary>
         /// Backing field for <see cref="ShowErrorIcon"/>
         /// </summary>
-        private Visibility _showErrorIcon = Visibility.Hidden;
+        private Visibility _showErrorIcon = Visibility.Collapsed;
 
         /// <summary>
         /// Gets or sets the visibility of the error icon
@@ -137,7 +139,7 @@ namespace MigrationHelper.Ui.ViewModel
         /// <summary>
         /// Backing field for <see cref="ShowValidIcon"/>
         /// </summary>
-        private Visibility _showValidIcon = Visibility.Hidden;
+        private Visibility _showValidIcon = Visibility.Collapsed;
 
         /// <summary>
         /// Gets or sets the visibility of the valid icon
@@ -146,6 +148,46 @@ namespace MigrationHelper.Ui.ViewModel
         {
             get => _showValidIcon;
             set => SetField(ref _showValidIcon, value);
+        }
+
+        /// <summary>
+        /// Backing field for <see cref="HasChanges"/>
+        /// </summary>
+        private bool _hasChanges;
+
+        /// <summary>
+        /// Gets or sets the value which indicates if the scrip contains changes
+        /// </summary>
+        public bool HasChanges
+        {
+            get => _hasChanges;
+            set
+            {
+                SetField(ref _hasChanges, value);
+                var text = "*";
+                if (value && !MigrationHeader.Contains(text))
+                {
+                    MigrationHeader += $" {text}";
+                }
+                else if (!value)
+                {
+                    MigrationHeader = MigrationHeader.Replace($" {text}", "");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Backing field for <see cref="MigrationHeader"/>
+        /// </summary>
+        private string _migrationHeader = "Migration file script";
+
+        /// <summary>
+        /// Gets or sets the header of the migration script editr
+        /// </summary>
+        public string MigrationHeader
+        {
+            get => _migrationHeader;
+            set => SetField(ref _migrationHeader, value);
         }
 
         /// <summary>
@@ -241,16 +283,27 @@ namespace MigrationHelper.Ui.ViewModel
         /// <summary>
         /// Clears the input for a new entry
         /// </summary>
-        public void ClearInput()
+        public async void ClearInput()
         {
+            if (HasChanges)
+            {
+                if (await _dialogCoordinator.ShowMessageAsync(this, "Changes",
+                        "There are unsaved changes. Continue?", MessageDialogStyle.AffirmativeAndNegative,
+                        new MetroDialogSettings {AffirmativeButtonText = "Yes", NegativeButtonText = "No"}) ==
+                    MessageDialogResult.Negative)
+                    return;
+            }
+
             Filename = "";
             _textGetSet.Set("");
             _existingFile = false;
             ShowErrorControl = false;
             ErrorList = new ObservableCollection<ErrorEntry>();
 
-            ShowErrorIcon = Visibility.Hidden;
-            ShowValidIcon = Visibility.Hidden;
+            ShowErrorIcon = Visibility.Collapsed;
+            ShowValidIcon = Visibility.Collapsed;
+            
+            HasChanges = false;
         }
 
         /// <summary>
@@ -262,8 +315,11 @@ namespace MigrationHelper.Ui.ViewModel
             ShowErrorControl = false;
             ErrorList = new ObservableCollection<ErrorEntry>();
 
-            ShowErrorIcon = Visibility.Hidden;
-            ShowValidIcon = Visibility.Hidden;
+            ShowErrorIcon = Visibility.Collapsed;
+            ShowValidIcon = Visibility.Collapsed;
+
+            if (_existingFile)
+                HasChanges = true;
         }
 
         /// <summary>
@@ -379,6 +435,8 @@ namespace MigrationHelper.Ui.ViewModel
                     await _dialogCoordinator.ShowMessageAsync(this, "File",
                         $"Migration file created / updated. File: {filename}");
                     Logger.Info($"Migration file created / updated. File: {filename}");
+
+                    HasChanges = false;
                 }
                 else
                     await _dialogCoordinator.ShowMessageAsync(this, "Error",
@@ -401,6 +459,15 @@ namespace MigrationHelper.Ui.ViewModel
         /// </summary>
         private async void OpenExistingFile()
         {
+            if (HasChanges)
+            {
+                if (await _dialogCoordinator.ShowMessageAsync(this, "Changes",
+                        "There are unsaved changes. Continue?", MessageDialogStyle.AffirmativeAndNegative,
+                        new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" }) ==
+                    MessageDialogResult.Negative)
+                    return;
+            }
+
             var dialog = new CommonOpenFileDialog
             {
                 IsFolderPicker = false,
@@ -418,6 +485,8 @@ namespace MigrationHelper.Ui.ViewModel
             try
             {
                 SetSqlText(dialog.FileName);
+
+                HasChanges = false;
             }
             catch (Exception ex)
             {

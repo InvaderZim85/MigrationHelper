@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using LibGit2Sharp;
 using ZimLabs.Utility;
 using ZimLabs.Utility.Extensions;
 
@@ -194,6 +195,8 @@ namespace MigrationHelper
             var projectDir = Path.GetDirectoryName(Properties.Settings.Default.ProjectFile);
             if (string.IsNullOrEmpty(projectDir) || !Directory.Exists(projectDir))
                 throw new DirectoryNotFoundException("The given directory doesn't exist.");
+
+            Mediator.Execute("SetBranchName");
 
             var fileDir = string.IsNullOrEmpty(Properties.Settings.Default.ScriptDirectory)
                 ? projectDir
@@ -524,6 +527,28 @@ namespace MigrationHelper
             {
                 Logger.Error(nameof(DeleteFiles), ex);
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets the current name of the branch
+        /// </summary>
+        /// <returns>The name of the branch</returns>
+        public static string GetBranchName()
+        {
+            var path = Path.GetDirectoryName(Properties.Settings.Default.ProjectFile);
+            if (string.IsNullOrEmpty(path))
+                return "undefined";
+
+            var gitPath = DirectoryHelper.GetDirectory(".git", path);
+
+            if (string.IsNullOrEmpty(gitPath))
+                return "undefined";
+
+            using (var repo = new Repository(gitPath))
+            {
+                var branch = repo.Head;
+                return branch.FriendlyName;
             }
         }
     }

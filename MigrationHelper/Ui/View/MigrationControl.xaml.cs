@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Windows.Controls;
+﻿using System;
 using System.Windows.Media;
 using MahApps.Metro.Controls.Dialogs;
 using MigrationHelper.DataObjects;
@@ -11,7 +10,7 @@ namespace MigrationHelper.Ui.View
     /// <summary>
     /// Interaction logic for MigrationControl.xaml
     /// </summary>
-    public partial class MigrationControl : UserControl, IUserControl
+    public partial class MigrationControl : IUserControl
     {
         /// <summary>
         /// Gets the description of the control
@@ -41,8 +40,6 @@ namespace MigrationHelper.Ui.View
 
             if (DataContext is MigrationControlViewModel viewModel)
                 viewModel.InitViewModel(DialogCoordinator.Instance, (SetSqlText, GetSqlText), UpdateFileList, SetSelectedFile);
-
-            
         }
 
         /// <summary>
@@ -93,11 +90,12 @@ namespace MigrationHelper.Ui.View
         }
 
         /// <summary>
-        /// Occurs when the user performs a double click on the error entry
+        /// Occurs when the user performs a double click on the error entry.
         /// </summary>
         /// <param name="entry">The selected entry</param>
         private void SqlErrorControl_OnDoubleClick(ErrorEntry entry)
         {
+            // INFO: Do not remove this class. ReSharper doesn't get it, that it's used in the ui
             SqlEditor.Focus();
             SqlEditor.ScrollTo(entry.Line, entry.Column);
             SqlEditor.TextArea.Caret.Line = entry.Line;
@@ -110,13 +108,26 @@ namespace MigrationHelper.Ui.View
         /// <param name="file">The selected file</param>
         private void FileList_OnSelectionChanged(TreeViewNode file)
         {
+            // INFO: Do not remove this class. ReSharper doesn't get it, that it's used in the ui
             if (DataContext is MigrationControlViewModel viewModel)
             {
                 if (file == null)
                     viewModel.ClearInput();
                 else
+                {
                     viewModel.OpenSelectedFile(file);
+                    viewModel.HasChanges = false;
+                }
             }
+        }
+
+        /// <summary>
+        /// Occurs when the user edits the text
+        /// </summary>
+        private void SqlEditor_OnTextChanged(object sender, EventArgs e)
+        {
+            if (DataContext is MigrationControlViewModel viewModel && !viewModel.HasChanges)
+                viewModel.HasChanges = true;
         }
     }
 }

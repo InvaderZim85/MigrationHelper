@@ -11,7 +11,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="clr-namespace:MigrationHelper.Ui"
     xmlns:viewModel="clr-namespace:MigrationHelper.Ui.ViewModel"
-    d:DesignHeight="400"
+    d:DesignHeight="675"
     d:DesignWidth="800"
     mah:DialogParticipation.Register="{Binding}"
     mc:Ignorable="d">
@@ -58,7 +58,6 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="{Binding ShowErrorControl, Converter={StaticResource VisibilityToRowHeightConverter}}" />
-                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
@@ -70,20 +69,27 @@
                 <Label
                     Grid.Row="0"
                     Grid.Column="0"
+                    Height="30"
+                    HorizontalAlignment="Center"
                     Content="Project file:" />
                 <TextBox
                     Grid.Row="0"
                     Grid.Column="1"
+                    Height="26"
                     Margin="3"
                     Text="{Binding ProjectFile}" />
                 <Button
                     Grid.Row="0"
                     Grid.Column="2"
-                    Width="30"
                     Margin="3"
                     Command="{Binding OpenProjectFileCommand}"
-                    Content="..."
-                    ToolTip="Open the project file of the migration project (*.csproj)" />
+                    Style="{StaticResource ImageButton}"
+                    ToolTip="Open the project file of the migration project (*.csproj)">
+                    <iconPacks:PackIconFontAwesome
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Kind="FolderOpenSolid" />
+                </Button>
 
                 <Label
                     Grid.Row="1"
@@ -93,6 +99,7 @@
                 <TextBox
                     Grid.Row="1"
                     Grid.Column="1"
+                    Height="26"
                     Margin="3"
                     Text="{Binding ScriptDir}" />
 
@@ -123,61 +130,123 @@
                 <Label
                     Grid.Row="6"
                     Grid.Column="0"
-                    Grid.ColumnSpan="3"
-                    VerticalAlignment="Center"
-                    Content="Migration file script:" />
-
-                <StackPanel
-                    Grid.Row="6"
-                    Grid.Column="1"
                     Grid.ColumnSpan="2"
-                    FlowDirection="RightToLeft"
-                    Orientation="Horizontal">
-                    <Button
-                        Width="50"
-                        Height="30"
-                        Margin="3"
-                        Command="{Binding ClearCommand}"
-                        ToolTip="Clears the sql script">
-                        <iconPacks:PackIconFontAwesome Kind="BroomSolid" />
-                    </Button>
-                    <Button
-                        Width="50"
-                        Margin="3"
-                        HorizontalAlignment="Right"
-                        Command="{Binding CheckCommand}"
-                        ToolTip="Checks the inserted SQL script">
-                        <iconPacks:PackIconMaterial Kind="CodeTagsCheck" />
-                    </Button>
-                    <iconPacks:PackIconMaterial
-                        Margin="3"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Foreground="Green"
-                        Kind="CodeTagsCheck"
-                        ToolTip="SQL script is valid"
-                        Visibility="{Binding ShowValidIcon}" />
-                    <iconPacks:PackIconMaterial
-                        Margin="3"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Foreground="Red"
-                        Kind="MessageAlert"
-                        ToolTip="SQL script contains errors"
-                        Visibility="{Binding ShowErrorIcon}" />
+                    VerticalAlignment="Center"
+                    Content="{Binding MigrationHeader}" />
 
-                </StackPanel>
-
-                <avalonedit:TextEditor
-                    Name="SqlEditor"
+                <Grid
                     Grid.Row="7"
                     Grid.Column="0"
-                    Grid.ColumnSpan="3"
-                    BorderBrush="Black"
-                    BorderThickness="1"
-                    FontFamily="Hack"
-                    FontSize="12"
-                    ShowLineNumbers="True" />
+                    Grid.ColumnSpan="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Separator
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Margin="3" />
+
+                    <StackPanel Grid.Row="1" Grid.Column="1">
+                        <Button
+                            Margin="3"
+                            Command="{Binding NewCommand}"
+                            Style="{StaticResource ImageButton}"
+                            ToolTip="Resets the input to create a new migration file">
+                            <iconPacks:PackIconMaterial Kind="FilePlus" />
+                        </Button>
+                        <Button
+                            Margin="3"
+                            HorizontalAlignment="Left"
+                            Command="{Binding OpenExistingFileCommand}"
+                            Style="{StaticResource ImageButton}"
+                            ToolTip="Open an existing sql file">
+                            <iconPacks:PackIconFontAwesome
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Kind="FolderOpenSolid" />
+                        </Button>
+
+                        <Separator Margin="3" />
+
+                        <Button
+                            Margin="3"
+                            HorizontalAlignment="Right"
+                            Command="{Binding CheckCommand}"
+                            Style="{StaticResource ImageButton}"
+                            ToolTip="Checks the inserted SQL script">
+                            <iconPacks:PackIconMaterial Kind="CodeTagsCheck" />
+                        </Button>
+                        <Button
+                            Margin="3"
+                            Command="{Binding ClearCommand}"
+                            Style="{StaticResource ImageButton}"
+                            ToolTip="Clears the sql script">
+                            <iconPacks:PackIconFontAwesome Kind="BroomSolid" />
+                        </Button>
+                    </StackPanel>
+
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="3"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Command="{Binding SaveCommand}"
+                        IsEnabled="{Binding CreateButtonEnabled}"
+                        Style="{StaticResource ImageButton}"
+                        ToolTip="Saves the current migration file">
+                        <iconPacks:PackIconFontAwesome Kind="SaveSolid" />
+                    </Button>
+
+                    <avalonedit:TextEditor
+                        Name="SqlEditor"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        FontFamily="Hack"
+                        FontSize="12"
+                        ShowLineNumbers="True"
+                        TextChanged="SqlEditor_OnTextChanged" />
+
+                    <StackPanel
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Orientation="Horizontal">
+                        <iconPacks:PackIconMaterial
+                            Margin="3"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Foreground="Green"
+                            Kind="CodeTagsCheck"
+                            ToolTip="SQL script is valid"
+                            Visibility="{Binding ShowValidIcon}" />
+                        <Label
+                            Content="SQL script is valid."
+                            Foreground="Green"
+                            Visibility="{Binding ShowValidIcon}" />
+                        <iconPacks:PackIconMaterial
+                            Margin="3"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Foreground="Red"
+                            Kind="MessageAlert"
+                            ToolTip="SQL script contains errors"
+                            Visibility="{Binding ShowErrorIcon}" />
+                        <Label
+                            Content="SQL script contains errors."
+                            Foreground="Red"
+                            Visibility="{Binding ShowErrorIcon}" />
+                    </StackPanel>
+                </Grid>
 
                 <!--  Error Window!  -->
                 <GridSplitter
@@ -193,48 +262,6 @@
                     DoubleClick="SqlErrorControl_OnDoubleClick"
                     ErrorList="{Binding ErrorList}"
                     Visibility="{Binding ShowErrorControl, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-
-
-                <StackPanel
-                    Grid.Row="10"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    Orientation="Horizontal">
-                    <Button
-                        Width="50"
-                        Height="30"
-                        Margin="3"
-                        HorizontalAlignment="Left"
-                        Command="{Binding OpenExistingFileCommand}"
-                        ToolTip="Open an existing sql file">
-                        <iconPacks:PackIconFontAwesome
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Kind="FolderOpenSolid" />
-                    </Button>
-                    <Button
-                        Width="50"
-                        Margin="3"
-                        Command="{Binding NewCommand}"
-                        ToolTip="Resets the input to create a new migration file">
-                        <iconPacks:PackIconMaterial Kind="FilePlus" />
-                    </Button>
-                </StackPanel>
-
-
-                <Button
-                    Grid.Row="10"
-                    Grid.Column="1"
-                    Grid.ColumnSpan="2"
-                    Width="50"
-                    Margin="3"
-                    HorizontalAlignment="Right"
-                    Command="{Binding SaveCommand}"
-                    IsEnabled="{Binding CreateButtonEnabled}"
-                    ToolTip="Saves the current migration file">
-                    <iconPacks:PackIconFontAwesome Kind="SaveSolid" />
-                </Button>
             </Grid>
         </Border>
 

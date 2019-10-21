@@ -107,16 +107,16 @@
             FlowDirection="RightToLeft"
             Orientation="Horizontal">
             <Button
-                Width="50"
                 Margin="3"
                 Command="{Binding DeleteCommand}"
+                Style="{StaticResource ImageButton}"
                 ToolTip="Deletes the selected file">
                 <iconPacks:PackIconFontAwesome Kind="TrashSolid" />
             </Button>
             <Button
-                Width="50"
                 Margin="3"
                 Command="{Binding OpenCommand}"
+                Style="{StaticResource ImageButton}"
                 ToolTip="Opens the selected file">
                 <iconPacks:PackIconFontAwesome
                     HorizontalAlignment="Center"
