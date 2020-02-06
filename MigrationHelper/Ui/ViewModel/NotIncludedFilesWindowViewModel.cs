@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -75,17 +76,26 @@ namespace MigrationHelper.Ui.ViewModel
             if (SelectedFiles == null)
                 return;
 
-            if (Helper.IncludeProjectFiles(SelectedFiles))
+            try
             {
-                await _dialogCoordinator.ShowMessageAsync(this, "Include",
-                    "Selected files successfully added to the project.");
+                if (Helper.IncludeProjectFiles(SelectedFiles))
+                {
+                    await _dialogCoordinator.ShowMessageAsync(this, "Include",
+                        "Selected files successfully added to the project.");
 
-                RemoveFromList(SelectedFiles);
+                    RemoveFromList(SelectedFiles);
+                }
+                else
+                {
+                    await _dialogCoordinator.ShowMessageAsync(this, "Include",
+                        "An error has occured while including the selected files.");
+                }
             }
-            else
+            catch (Exception ex)
             {
+                Logger.Error(nameof(IncludeFiles), ex);
                 await _dialogCoordinator.ShowMessageAsync(this, "Include",
-                    "An error has occured while including the selected files.");
+                    $"An error has occured while including the selected files.\r\n\r\nMessage: {ex.Message}");
             }
         }
 

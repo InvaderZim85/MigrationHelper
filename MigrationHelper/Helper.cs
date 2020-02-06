@@ -387,6 +387,10 @@ namespace MigrationHelper
         /// <param name="forceLoad">true to force the creation of a new instance</param>
         private static void LoadProject(bool forceLoad = false)
         {
+            if (!File.Exists(Properties.Settings.Default.ProjectFile))
+                throw new FileNotFoundException("The project file is missing.",
+                    Properties.Settings.Default.ProjectFile);
+
             if (_project == null || forceLoad)
                 _project = new Project(Properties.Settings.Default.ProjectFile);
         }

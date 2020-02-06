@@ -116,7 +116,7 @@ namespace MigrationHelper.Ui.ViewModel
             catch (Exception ex)
             {
                 Logger.Error(nameof(LoadFiles), ex);
-                await _dialogCoordinator.ShowMessageAsync(this, "Error", $"An error has occured: {ex.Message}");
+                //await _dialogCoordinator.ShowMessageAsync(this, "Error", $"An error has occured: {ex.Message}");
             }
         }
 
