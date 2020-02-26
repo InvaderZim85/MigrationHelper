@@ -88,9 +88,9 @@ namespace MigrationHelper.Ui.ViewModel
 
             Mediator.Register(nameof(SetBranchName), SetBranchName);
 
-            var version = Helper.GetVersion();
+            var (_, _, _, productVersion) = Helper.GetVersion();
 
-            Title = $"Migration Helper (v{version.productVersion})";
+            Title = $"Migration Helper (v{productVersion})";
 
             SwitchControl(MenuItemType.Migration);
         }
@@ -100,27 +100,15 @@ namespace MigrationHelper.Ui.ViewModel
         /// </summary>
         public async void CheckProperties()
         {
-            var message = "";
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.ProjectFile) &&
-                !File.Exists(Properties.Settings.Default.ProjectFile))
-            {
-                message = "Project file is missing.";
-            }
-
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.ScriptDirectory) &&
-                !Directory.Exists(Properties.Settings.Default.ScriptDirectory))
-            {
-                message = "Script directory is missing";
-            }
-
-            if (string.IsNullOrEmpty(message))
+            if (string.IsNullOrEmpty(Properties.Settings.Default.ProjectFile) ||
+                File.Exists(Properties.Settings.Default.ProjectFile)) 
                 return;
 
             // Remove the project file
             Properties.Settings.Default.ProjectFile = "";
             Properties.Settings.Default.Save();
 
-            await _dialogCoordinator.ShowMessageAsync(this, "Error", "The project file cannot be found.");
+            await _dialogCoordinator.ShowMessageAsync(this, "Error", "The project file cannot be found. Reset settings.");
         }
 
         /// <summary>

@@ -147,6 +147,11 @@ namespace MigrationHelper.Ui.ViewModel
         });
 
         /// <summary>
+        /// The command to reload the files
+        /// </summary>
+        public ICommand ReloadCommand => new DelegateCommand(LoadFiles);
+
+        /// <summary>
         /// Filters the list
         /// </summary>
         private void FilterList()

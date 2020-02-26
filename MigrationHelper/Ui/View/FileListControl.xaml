@@ -41,8 +41,8 @@
             Name="NodeTreeView"
             Grid.Row="2"
             Margin="3"
-            MouseDoubleClick="NodeTreeView_OnMouseDoubleClick"
-            ItemsSource="{Binding NodeList}">
+            ItemsSource="{Binding NodeList}"
+            MouseDoubleClick="NodeTreeView_OnMouseDoubleClick">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type dataObjects:TreeViewNode}" ItemsSource="{Binding SubNodes}">
                     <Grid>
@@ -123,6 +123,16 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Kind="FolderOpenSolid" />
+            </Button>
+            <Button
+                Margin="3"
+                Command="{Binding ReloadCommand}"
+                Style="{StaticResource ImageButton}"
+                ToolTip="Reloads the list">
+                <iconPacks:PackIconModern
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Kind="Refresh" />
             </Button>
         </StackPanel>
     </Grid>

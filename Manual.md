@@ -21,6 +21,7 @@
 |---|---|---|
 | 1.0 | 2019-04-07 | A. Pouwels |
 | 1.1 | 2019-10-21 | A. Pouwels |
+| 1.2 | 2020-02-26 | A. Pouwels |
 
 ## General
 The *Migration Helper* is a small tool to create migration script for projects which uses the migration project [dbup](https://dbup.github.io).

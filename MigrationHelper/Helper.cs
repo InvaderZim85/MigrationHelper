@@ -540,20 +540,29 @@ namespace MigrationHelper
         /// <returns>The name of the branch</returns>
         public static string GetBranchName()
         {
-            var path = Path.GetDirectoryName(Properties.Settings.Default.ProjectFile);
-            if (string.IsNullOrEmpty(path))
-                return "undefined";
-
-            var gitPath = DirectoryHelper.GetDirectory(".git", path);
-
-            if (string.IsNullOrEmpty(gitPath))
-                return "undefined";
-
-            using (var repo = new Repository(gitPath))
+            try
             {
-                var branch = repo.Head;
-                return branch.FriendlyName;
+                var path = Path.GetDirectoryName(Properties.Settings.Default.ProjectFile);
+                if (string.IsNullOrEmpty(path))
+                    return "undefined";
+
+                var gitPath = DirectoryHelper.GetDirectory(".git", path);
+
+                if (string.IsNullOrEmpty(gitPath))
+                    return "undefined";
+
+                using (var repo = new Repository(gitPath))
+                {
+                    var branch = repo.Head;
+                    return branch.FriendlyName;
+                }
             }
+            catch (Exception ex)
+            {
+                Logger.Error("Can't load branch name.", ex);
+                return "undefined";
+            }
+            
         }
     }
 }

@@ -459,16 +459,15 @@ namespace MigrationHelper.Ui.ViewModel
                 if (successful)
                 {
                     Filename = filename;
-                    
+
+                    var msg = ExistingFile ? "Migration file updated" : $"Migration file created. File: {filename}";
+                    Logger.Info($"Migration file {(ExistingFile ? "updated" : "created")}. File: {filename}");
+
                     ExistingFile = true;
                     _updateList();
                     _setSelectedFile(filename);
 
-                    var msg = ExistingFile ? "Migration file updated" : $"Migration file created. File: {filename}";
-
                     await _dialogCoordinator.ShowMessageAsync(this, "File", msg);
-
-                    Logger.Info($"Migration file {(ExistingFile ? "updated" : "created")}. File: {filename}");
 
                     HasChanges = false;
                 }

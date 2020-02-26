@@ -50,7 +50,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="D:\Repositories\Appz\MigrationHelper\MigrationHelper.TestProject\Scripts\191021152826_TestScript.sql" />
+    <EmbeddedResource Include="Scripts\Scripts_2020\200226173022_TestScript.sql" />
+    <EmbeddedResource Include="Scripts\Scripts_2020\200226173408_Test2Script.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

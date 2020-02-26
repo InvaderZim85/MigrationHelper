@@ -97,7 +97,7 @@ namespace MigrationHelper.Ui.View
         /// <param name="entry">The selected entry</param>
         private void SqlErrorControl_OnDoubleClick(ErrorEntry entry)
         {
-            // INFO: Do not remove this class. ReSharper doesn't get it, that it's used in the ui
+            // INFO: Do not remove this method. ReSharper doesn't get it, that it's used in the ui
             SqlEditor.Focus();
             SqlEditor.ScrollTo(entry.Line, entry.Column);
             SqlEditor.TextArea.Caret.Line = entry.Line;
@@ -110,7 +110,7 @@ namespace MigrationHelper.Ui.View
         /// <param name="file">The selected file</param>
         private void FileList_OnSelectionChanged(TreeViewNode file)
         {
-            // INFO: Do not remove this class. ReSharper doesn't get it, that it's used in the ui
+            // INFO: Do not remove this method. ReSharper doesn't get it, that it's used in the ui
             if (DataContext is MigrationControlViewModel viewModel)
             {
                 if (file == null)

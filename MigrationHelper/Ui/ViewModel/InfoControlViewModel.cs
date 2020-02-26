@@ -92,10 +92,10 @@ namespace MigrationHelper.Ui.ViewModel
         /// <summary>
         /// Init the view model
         /// </summary>
-        /// <param name="dialogCoordinator"></param>
+        /// <param name="dialogCoordinator">The instance of the mah apps dialog coordinator</param>
         public void InitViewModel(IDialogCoordinator dialogCoordinator)
         {
-            _dialogCoordinator = new DialogCoordinator();
+            _dialogCoordinator = dialogCoordinator;
         }
 
         /// <summary>
