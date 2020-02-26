@@ -116,7 +116,7 @@ namespace MigrationHelper.Ui.ViewModel
             catch (Exception ex)
             {
                 Logger.Error(nameof(LoadFiles), ex);
-                //await _dialogCoordinator.ShowMessageAsync(this, "Error", $"An error has occured: {ex.Message}");
+                await _dialogCoordinator.ShowMessageAsync(this, "Error", $"An error has occured: {ex.Message}");
             }
         }
 
@@ -266,7 +266,7 @@ namespace MigrationHelper.Ui.ViewModel
         /// Gets the selected tree view node
         /// </summary>
         /// <returns>The selected item</returns>
-        private TreeViewNode GetSelectedNode()
+        public TreeViewNode GetSelectedNode()
         {
             // The first node is the root node
             var rootNode = NodeList?.FirstOrDefault();

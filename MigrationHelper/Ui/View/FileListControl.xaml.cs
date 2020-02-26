@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using MahApps.Metro.Controls.Dialogs;
 using MigrationHelper.DataObjects;
 using MigrationHelper.Ui.ViewModel;
@@ -41,12 +43,20 @@ namespace MigrationHelper.Ui.View
         }
 
         /// <summary>
+        /// Loads the file list
+        /// </summary>
+        private void LoadData()
+        {
+            if (DataContext is FileListControlViewModel viewModel)
+                viewModel.LoadFiles();
+        }
+
+        /// <summary>
         /// Reloads the file list
         /// </summary>
         public void Reload()
         {
-            if (DataContext is FileListControlViewModel viewModel)
-                viewModel.LoadFiles();
+            LoadData();
         }
 
         /// <summary>
@@ -69,6 +79,20 @@ namespace MigrationHelper.Ui.View
         private void SelectionChangedNotifier(TreeViewNode file)
         {
             SelectionChanged?.Invoke(file);
+        }
+
+        /// <summary>
+        /// Occurs when the user performs a double click
+        /// </summary>
+        private void NodeTreeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (!(DataContext is FileListControlViewModel viewModel))
+                return;
+
+            var selectedNode = viewModel.GetSelectedNode();
+
+            if (selectedNode != null)
+                SelectionChanged?.Invoke(selectedNode);
         }
     }
 }

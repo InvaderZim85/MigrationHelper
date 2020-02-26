@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using MahApps.Metro.Controls.Dialogs;
@@ -129,6 +130,15 @@ namespace MigrationHelper.Ui.View
         {
             if (DataContext is MigrationControlViewModel viewModel && !viewModel.HasChanges)
                 viewModel.HasChanges = true;
+        }
+
+        /// <summary>
+        /// Occurs when the window was loaded
+        /// </summary>
+        private void MigrationControl_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MigrationControlViewModel viewModel)
+                viewModel.LoadData();
         }
     }
 }

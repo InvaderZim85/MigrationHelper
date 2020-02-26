@@ -46,7 +46,12 @@
             Margin="3"
             VerticalAlignment="Center">
             Migration Helper by A. Pouwels.<LineBreak />
-            For more information see here:<Hyperlink NavigateUri="https://github.com/InvaderZim85/MigrationHelper" RequestNavigate="Hyperlink_OnRequestNavigate">MigrationHelper on GitHub</Hyperlink>
+            <Hyperlink
+                NavigateUri="https://github.com/InvaderZim85/MigrationHelper"
+                RequestNavigate="Hyperlink_OnRequestNavigate"
+                ToolTip="MigrationHelper on GitHub">
+                For more information click here
+            </Hyperlink>
         </TextBlock>
 
         <Separator

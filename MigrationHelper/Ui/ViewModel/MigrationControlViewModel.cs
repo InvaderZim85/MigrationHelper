@@ -39,9 +39,22 @@ namespace MigrationHelper.Ui.ViewModel
         private string _projectFile;
 
         /// <summary>
-        /// Contains the value which indicates if an existing file was opened
+        /// Backing field for <see cref="ExistingFile"/>
         /// </summary>
         private bool _existingFile;
+
+        /// <summary>
+        /// Gets or sets the value which indicates if an existing file was opened
+        /// </summary>
+        private bool ExistingFile
+        {
+            get => _existingFile;
+            set
+            {
+                SetField(ref _existingFile, value);
+                FilenameReadOnly = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the path of the project file
@@ -90,6 +103,20 @@ namespace MigrationHelper.Ui.ViewModel
                 CreateButtonEnabled = !string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(ProjectFile) &&
                                       File.Exists(ProjectFile);
             }
+        }
+
+        /// <summary>
+        /// Backing field for <see cref="FilenameReadOnly"/>
+        /// </summary>
+        private bool _filenameReadOnly;
+
+        /// <summary>
+        /// Gets or sets the value which indicates if the filename field is enabled
+        /// </summary>
+        public bool FilenameReadOnly
+        {
+            get => _filenameReadOnly;
+            set => SetField(ref _filenameReadOnly, value);
         }
 
         /// <summary>
@@ -180,7 +207,7 @@ namespace MigrationHelper.Ui.ViewModel
         private string _migrationHeader = "Migration file script";
 
         /// <summary>
-        /// Gets or sets the header of the migration script editr
+        /// Gets or sets the header of the migration script edit
         /// </summary>
         public string MigrationHeader
         {
@@ -216,7 +243,14 @@ namespace MigrationHelper.Ui.ViewModel
             _textGetSet = textGetSet;
             _updateList = updateList;
             _setSelectedFile = setSelectedFile;
+        }
 
+        /// <summary>
+        /// Loads the data
+        /// </summary>
+        public void LoadData()
+        {
+            // The loading is triggered by the script dir property
             ProjectFile = Properties.Settings.Default.ProjectFile;
             ScriptDir = Properties.Settings.Default.ScriptDirectory;
         }
@@ -294,7 +328,7 @@ namespace MigrationHelper.Ui.ViewModel
 
             Filename = "";
             _textGetSet.Set("");
-            _existingFile = false;
+            ExistingFile = false;
             ShowErrorControl = false;
             ErrorList = new ObservableCollection<ErrorEntry>();
 
@@ -316,7 +350,7 @@ namespace MigrationHelper.Ui.ViewModel
             ShowErrorIcon = Visibility.Collapsed;
             ShowValidIcon = Visibility.Collapsed;
 
-            if (_existingFile)
+            if (ExistingFile)
                 HasChanges = true;
         }
 
@@ -420,19 +454,21 @@ namespace MigrationHelper.Ui.ViewModel
 
             try
             {
-                var (successful, filename) = await Task.Run(() => Helper.SaveMigrationFile(Filename, sql, _existingFile));
+                var (successful, filename) = await Task.Run(() => Helper.SaveMigrationFile(Filename, sql, ExistingFile));
 
                 if (successful)
                 {
                     Filename = filename;
                     
-                    _existingFile = true;
+                    ExistingFile = true;
                     _updateList();
                     _setSelectedFile(filename);
 
-                    await _dialogCoordinator.ShowMessageAsync(this, "File",
-                        $"Migration file created / updated. File: {filename}");
-                    Logger.Info($"Migration file created / updated. File: {filename}");
+                    var msg = ExistingFile ? "Migration file updated" : $"Migration file created. File: {filename}";
+
+                    await _dialogCoordinator.ShowMessageAsync(this, "File", msg);
+
+                    Logger.Info($"Migration file {(ExistingFile ? "updated" : "created")}. File: {filename}");
 
                     HasChanges = false;
                 }
@@ -501,7 +537,7 @@ namespace MigrationHelper.Ui.ViewModel
         /// <param name="file">The file</param>
         public void OpenSelectedFile(TreeViewNode file)
         {
-            _existingFile = true;
+            ExistingFile = true;
 
             Filename = file.Name.Replace(file.FileExtension, "");
 

@@ -2,9 +2,9 @@
 
 namespace MigrationHelper.TestProject
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             Console.WriteLine("This is a test project for the MigrationHelper.");
             Console.WriteLine("Press any key.");

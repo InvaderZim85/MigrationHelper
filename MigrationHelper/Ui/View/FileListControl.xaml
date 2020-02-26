@@ -41,6 +41,7 @@
             Name="NodeTreeView"
             Grid.Row="2"
             Margin="3"
+            MouseDoubleClick="NodeTreeView_OnMouseDoubleClick"
             ItemsSource="{Binding NodeList}">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type dataObjects:TreeViewNode}" ItemsSource="{Binding SubNodes}">

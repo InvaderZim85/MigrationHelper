@@ -96,6 +96,34 @@ namespace MigrationHelper.Ui.ViewModel
         }
 
         /// <summary>
+        /// Checks the properties at the start up
+        /// </summary>
+        public async void CheckProperties()
+        {
+            var message = "";
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.ProjectFile) &&
+                !File.Exists(Properties.Settings.Default.ProjectFile))
+            {
+                message = "Project file is missing.";
+            }
+
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.ScriptDirectory) &&
+                !Directory.Exists(Properties.Settings.Default.ScriptDirectory))
+            {
+                message = "Script directory is missing";
+            }
+
+            if (string.IsNullOrEmpty(message))
+                return;
+
+            // Remove the project file
+            Properties.Settings.Default.ProjectFile = "";
+            Properties.Settings.Default.Save();
+
+            await _dialogCoordinator.ShowMessageAsync(this, "Error", "The project file cannot be found.");
+        }
+
+        /// <summary>
         /// The menu command to select another control
         /// </summary>
         public ICommand MenuCommand => new RelayCommand<MenuItemType>(SwitchControl);
