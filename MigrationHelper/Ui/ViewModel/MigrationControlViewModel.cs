@@ -239,6 +239,8 @@ namespace MigrationHelper.Ui.ViewModel
         public void InitViewModel(IDialogCoordinator dialogCoordinator,
             (Action<string> setText, Func<string> getText) textGetSet, Action updateList, Action<string> setSelectedFile)
         {
+            Logger.Info("Init migration control");
+
             _dialogCoordinator = dialogCoordinator;
             _textGetSet = textGetSet;
             _updateList = updateList;

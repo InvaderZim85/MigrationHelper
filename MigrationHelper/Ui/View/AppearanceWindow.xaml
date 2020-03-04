@@ -32,7 +32,8 @@
         <Label
             Grid.Row="0"
             Grid.Column="0"
-            Content="Theme:" />
+            Content="Theme:"
+            Style="{StaticResource NormalStyle}" />
         <ComboBox
             Grid.Row="0"
             Grid.Column="1"
@@ -43,7 +44,8 @@
         <Label
             Grid.Row="1"
             Grid.Column="0"
-            Content="Accent:" />
+            Content="Accent:"
+            Style="{StaticResource NormalStyle}" />
         <ComboBox
             Grid.Row="1"
             Grid.Column="1"

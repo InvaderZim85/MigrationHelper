@@ -25,7 +25,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -64,7 +63,8 @@
             Grid.Row="3"
             Grid.Column="0"
             HorizontalAlignment="Right"
-            Content="Name:" />
+            Content="Name:"
+            Style="{StaticResource NormalStyle}" />
         <TextBox
             Grid.Row="3"
             Grid.Column="1"
@@ -76,46 +76,37 @@
             Grid.Row="4"
             Grid.Column="0"
             HorizontalAlignment="Right"
-            Content="Original name:" />
+            Content="File version:"
+            Style="{StaticResource NormalStyle}" />
         <TextBox
             Grid.Row="4"
             Grid.Column="1"
             Margin="3"
             IsReadOnly="True"
-            Text="{Binding OriginalName}" />
+            Text="{Binding Version}" />
 
         <Label
             Grid.Row="5"
             Grid.Column="0"
             HorizontalAlignment="Right"
-            Content="File version:" />
+            Content="Log directory:"
+            Style="{StaticResource NormalStyle}" />
         <TextBox
             Grid.Row="5"
             Grid.Column="1"
             Margin="3"
             IsReadOnly="True"
-            Text="{Binding FileVersion}" />
+            Text="{Binding LogDir}" />
 
         <Label
             Grid.Row="6"
-            Grid.Column="0"
-            HorizontalAlignment="Right"
-            Content="Product version:" />
-        <TextBox
-            Grid.Row="6"
-            Grid.Column="1"
-            Margin="3"
-            IsReadOnly="True"
-            Text="{Binding ProductVersion}" />
-
-        <Label
-            Grid.Row="7"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            Content="This program uses the following external packages (packages provides via NuGet)" />
+            Content="This program uses the following external packages (packages provides via NuGet)"
+            Style="{StaticResource NormalStyle}" />
 
         <DataGrid
-            Grid.Row="8"
+            Grid.Row="7"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Margin="3"

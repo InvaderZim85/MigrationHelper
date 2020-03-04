@@ -71,8 +71,9 @@
                     Grid.Row="0"
                     Grid.Column="0"
                     Height="30"
-                    HorizontalAlignment="Center"
-                    Content="Project file:" />
+                    HorizontalAlignment="Right"
+                    Content="Project file:"
+                    Style="{StaticResource NormalStyle}" />
                 <TextBox
                     Grid.Row="0"
                     Grid.Column="1"
@@ -96,7 +97,8 @@
                     Grid.Row="1"
                     Grid.Column="0"
                     HorizontalAlignment="Right"
-                    Content="Script dir:" />
+                    Content="Script dir:"
+                    Style="{StaticResource NormalStyle}" />
                 <TextBox
                     Grid.Row="1"
                     Grid.Column="1"
@@ -114,7 +116,8 @@
                     Grid.Row="4"
                     Grid.Column="0"
                     HorizontalAlignment="Right"
-                    Content="Filename:" />
+                    Content="Filename:"
+                    Style="{StaticResource NormalStyle}" />
                 <TextBox
                     Grid.Row="4"
                     Grid.Column="1"

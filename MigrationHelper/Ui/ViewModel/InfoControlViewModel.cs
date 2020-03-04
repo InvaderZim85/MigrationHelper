@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using MahApps.Metro.Controls.Dialogs;
 using MigrationHelper.DataObjects;
+using ZimLabs.Utility;
 using ZimLabs.WpfBase;
 
 namespace MigrationHelper.Ui.ViewModel
@@ -48,45 +50,31 @@ namespace MigrationHelper.Ui.ViewModel
         }
 
         /// <summary>
-        /// Backing field for <see cref="OriginalName"/>
+        /// Backing field for <see cref="Version"/>
         /// </summary>
-        private string _originalName;
-
-        /// <summary>
-        /// Gets or sets the original name
-        /// </summary>
-        public string OriginalName
-        {
-            get => _originalName;
-            set => SetField(ref _originalName, value);
-        }
-
-        /// <summary>
-        /// Backing field for <see cref="FileVersion"/>
-        /// </summary>
-        private string _fileVersion;
+        private string _version;
 
         /// <summary>
         /// Gets or sets the file version
         /// </summary>
-        public string FileVersion
+        public string Version
         {
-            get => _fileVersion;
-            set => SetField(ref _fileVersion, value);
+            get => _version;
+            set => SetField(ref _version, value);
         }
 
         /// <summary>
-        /// Backing field for <see cref="ProductVersion"/>
+        /// Backing field for <see cref="LogDir"/>
         /// </summary>
-        private string _productVersion;
+        private string _logDir;
 
         /// <summary>
-        /// Gets or sets the product version
+        /// Gets or sets the path of the log directory
         /// </summary>
-        public string ProductVersion
+        public string LogDir
         {
-            get => _productVersion;
-            set => SetField(ref _productVersion, value);
+            get => _logDir;
+            set => SetField(ref _logDir, value);
         }
 
         /// <summary>
@@ -108,12 +96,11 @@ namespace MigrationHelper.Ui.ViewModel
 
             try
             {
-                var (internalName, originalName, fileVersion, productVersion) = Helper.GetVersion();
+                var (internalName, _, fileVersion, _) = Helper.GetVersion();
 
                 Name = internalName;
-                OriginalName = originalName;
-                FileVersion = fileVersion;
-                ProductVersion = productVersion;
+                Version = fileVersion;
+                LogDir = Path.Combine(Global.GetBaseFolder(), "logs");
 
                 var tmpList = Helper.GetPackageInformation();
 

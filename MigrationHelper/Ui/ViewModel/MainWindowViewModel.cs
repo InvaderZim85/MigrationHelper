@@ -91,6 +91,7 @@ namespace MigrationHelper.Ui.ViewModel
             var (_, _, _, productVersion) = Helper.GetVersion();
 
             Title = $"Migration Helper (v{productVersion})";
+            Logger.Info($"Start application. Version: {productVersion}");
 
             SwitchControl(MenuItemType.Migration);
         }
